@@ -15,7 +15,7 @@ readme = ""
 
 setup(
     long_description=readme,
-    name="gpt_interface",
+    name="gptsenpai",
     version="0.1.2",
     python_requires="==3.*,>=3.6.5",
     author="mei",

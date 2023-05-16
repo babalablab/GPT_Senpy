@@ -11,7 +11,7 @@ dev = [
     "pre-commit>=3.3.1",
 ]
 [project]
-name = "gpt_interface"
+name = "gptsenpai"
 version = "0.0.1"
 description = ""
 authors = [
