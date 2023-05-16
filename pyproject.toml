@@ -11,8 +11,8 @@ dev = [
     "pre-commit>=3.3.1",
 ]
 [project]
-name = ""
-version = ""
+name = "gpt_interface"
+version = "0.0.1"
 description = ""
 authors = [
     {name = "mei", email = "mingzhe-yang@g.ecc.u-tokyo.ac.jp"},
