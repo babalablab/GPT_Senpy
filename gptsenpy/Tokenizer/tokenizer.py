@@ -1,5 +1,6 @@
-import tiktoken
 from typing import List
+
+import tiktoken
 
 
 class Tokenizer:
@@ -22,7 +23,12 @@ class Tokenizer:
         """
         if not isinstance(text, str):
             raise ValueError("Input must be a string")
-        return self._decode(self._encode(text))
+        list_tokens: List[int] = self._encode(text)
+        tokens: List[str] = [
+            self.tokenizer.decode_single_token_bytes(token) for token in list_tokens
+        ]
+        tokens: List[str] = [token.decode("utf-8") for token in tokens]
+        return tokens
 
     def count_tokens(self, text: str) -> int:
         """
