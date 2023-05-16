@@ -45,7 +45,9 @@ class TestPromptMethods(unittest.TestCase):
         # Empty template
         template = ""
         replacer = {"name": "John", "age": "30"}
-        PT = PromptTemplate(template)
+        # waring
+        with self.assertWarns(UserWarning):
+            PT = PromptTemplate(template)
         expected_output = ""
         self.assertEqual(PT.build_prompt(replacer), expected_output)
 
