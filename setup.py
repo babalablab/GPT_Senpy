@@ -15,9 +15,9 @@ readme = ""
 
 setup(
     long_description=readme,
-    name="gptsenpai",
+    name="gptsenpy",
     version="0.1.2",
-    python_requires="==3.*,>=3.6.5",
+    python_requires=">=3.10",
     author="mei",
     author_email="mingzhe-yang@g.ecc.u-tokyo.ac.jp",
     maintainer="kei moriyama",
