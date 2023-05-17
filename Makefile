@@ -1,2 +1,2 @@
 test:
-	pdm run python -m unittest tests/*.py
+	pdm run pytest
