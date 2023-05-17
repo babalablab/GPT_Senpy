@@ -42,7 +42,7 @@ exclude = '''
 '''
 
 [tool.pdm.scripts]
-check_type = "mypy depwatch tests"
-check_lint = "flake8 depwatch tests"
-check_format = "black --check depwatch tests"
+check_type = "mypy gptsenpy tests"
+check_lint = "flake8 gptsenpy tests"
+check_format = "black --check gptsenpy tests"
 test = "pytest tests"
