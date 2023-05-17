@@ -25,18 +25,24 @@ license = {text = "MIT"}
 
 [tool.black]
 line-length = 88
-# include = '\.pyi?$'
-# exclude = '''
-# /(
-#     \.git
-#   | \.hg
-#   | \.mypy_cache
-#   | \.tox
-#   | \.venv
-#   | _build
-#   | buck-out
-#   | build
-#   | dist
-#   | migrations
-# )/
-# '''
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | migrations
+)/
+'''
+
+[tool.pdm.scripts]
+check_type = "mypy depwatch tests"
+check_lint = "flake8 depwatch tests"
+check_format = "black --check depwatch tests"
+test = "pytest tests"
