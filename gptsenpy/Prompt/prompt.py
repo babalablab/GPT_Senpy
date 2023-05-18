@@ -43,5 +43,5 @@ class PromptTemplate:
             return template.substitute(**replacer)
         except KeyError as e:
             raise KeyError(f"Invalid template: Missing placeholder '{e.args[0]}'")
-        except:
+        except ValueError:
             raise ValueError("Invalid template")
