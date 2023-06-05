@@ -71,7 +71,7 @@ class Metrics:
         return 2 * recall * precision / (recall + precision)
 
     def get_value_if_none(
-        self, values: Optional[dict], name: Optional[str] = None
+        self, values: Optional[dict] = None, name: Optional[str] = None
     ) -> dict[str, Any]:
         if values is None and name is not None:
             return getattr(self, name)
