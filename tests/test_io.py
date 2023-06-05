@@ -1,5 +1,7 @@
 import sys
 
+import pytest
+
 sys.path.append("../gptsenpy")
 
 
@@ -21,3 +23,10 @@ def test_read_text():
     expected = "Hello, my name is ${name} and I am ${age} years old."
 
     assert data == expected
+
+
+def test_duplicate_keys():
+    data_path = "tests/data/duplicate_keys.json"
+    with pytest.raises(AssertionError) as e:
+        _ = read_json(data_path)
+    assert str(e.value) == "Duplicate keys in JSON file."
