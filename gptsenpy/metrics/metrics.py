@@ -12,7 +12,7 @@ def clean_values(values: dict[str, Any]) -> dict[str, Any]:
 
     """
     assert isinstance(values, dict), "Values must be a dict"
-    return {k: v for k, v in values.items() if v is not None}
+    return {k: v for k, v in values.items() if v is not None and v is not False}
 
 
 class Metrics:

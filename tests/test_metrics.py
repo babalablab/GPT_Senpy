@@ -209,3 +209,23 @@ def test_recall_precision_10():
     assert mt.get_precision(preds, preds) == 1.0
     assert mt.recall == 5 / 6
     assert mt.precision == 5 / 8
+
+
+def test_recall_precision_11():
+    data_path = (
+        "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
+    )
+    data = read_json(data_path)
+    preds = {
+        # "optim-optimizer-MomentumSGD": True,
+        # "optim-optimizer-MomentumSGD-momentum": 0.9,
+        "optim-learningrate": 0.4,
+        "optim-weightdecay": True,
+        "optim-lrschedular": False,
+        "batchsize": 256,
+        "epochs": 200,  # 300 -> 200
+        "resource-gpu-T4": True,
+    }
+    mt = Metrics(data, preds)
+    assert mt.recall == 4 / 5
+    assert mt.precision == 4 / 8
