@@ -1,7 +1,6 @@
 import sys
 
 sys.path.append("../gptsenpy")
-from ipdb import set_trace as ist
 
 from gptsenpy.io.read import read_json
 from gptsenpy.metrics import Metrics
