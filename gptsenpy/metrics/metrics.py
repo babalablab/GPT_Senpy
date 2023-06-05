@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 
 def clean_values(values: dict[str, Any]) -> dict[str, Any]:
@@ -11,11 +11,8 @@ def clean_values(values: dict[str, Any]) -> dict[str, Any]:
         anotaion information without null values
 
     """
-    ret_dict = {}
-    for k, v in values.items():
-        if v is not None:
-            ret_dict[k] = v
-    return ret_dict
+    assert isinstance(values, dict), "Values must be a dict"
+    return {k: v for k, v in values.items() if v is not None}
 
 
 class Metrics:
@@ -27,9 +24,11 @@ class Metrics:
         self.recall: float = self.get_recall()
         self.f1: float = self.get_f1()
 
-    def get_precision(self) -> float:
-        preds = self.preds
-        labels = self.labels
+    def get_precision(
+        self, labels: Optional[dict] = None, preds: Optional[dict] = None
+    ) -> float:
+        labels = self.get_value_if_none(labels, "labels")
+        preds = self.get_value_if_none(preds, "preds")
         if len(labels) == 0:
             return 0.0
         else:
@@ -41,9 +40,12 @@ class Metrics:
             )
         return numerator / len(labels)
 
-    def get_recall(self) -> float:
-        preds = self.preds
-        labels = self.labels
+    def get_recall(
+        self, labels: Optional[dict] = None, preds: Optional[dict] = None
+    ) -> float:
+        labels = self.get_value_if_none(labels, "labels")
+        preds = self.get_value_if_none(preds, "preds")
+
         if len(preds) == 0:
             return 0.0
         else:
@@ -55,8 +57,25 @@ class Metrics:
             )
         return numerator / len(preds)
 
-    def get_f1(self) -> float:
-        recall, precision = self.recall, self.precision
+    def get_f1(
+        self, labels: Optional[dict] = None, preds: Optional[dict] = None
+    ) -> float:
+        labels = self.get_value_if_none(labels, "labels")
+        preds = self.get_value_if_none(preds, "preds")
+        recall, precision = self.get_recall(labels, preds), self.get_precision(
+            labels, preds
+        )
+
         if recall + precision == 0:
             return 0
         return 2 * recall * precision / (recall + precision)
+
+    def get_value_if_none(
+        self, values: Optional[dict], name: Optional[str] = None
+    ) -> dict[str, Any]:
+        if values is None and name is not None:
+            return getattr(self, name)
+        elif values is not None:
+            return clean_values(values)
+        else:
+            raise ValueError("Values and name cannot be None")

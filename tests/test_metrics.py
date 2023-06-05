@@ -143,3 +143,69 @@ def test_recall_precision_6():
     mt = Metrics(data, preds)
     assert mt.recall == 5 / 6
     assert mt.precision == 5 / 8
+
+
+def test_recall_precision_9():
+    data_path = (
+        "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
+    )
+    data = read_json(data_path)
+    preds = {
+        # "optim-optimizer-MomentumSGD": True,
+        # "optim-optimizer-MomentumSGD-momentum": 0.9,
+        "optim-learningrate": 0.4,
+        "optim-weightdecay": True,
+        "optim-lrschedular": True,
+        "batchsize": 256,
+        "epochs": 200,  # 300 -> 200
+        "resource-gpu-T4": True,
+    }
+    mt = Metrics(data, preds)
+    assert mt.get_recall(data, preds) == 5 / 6
+    assert mt.get_precision(data, preds) == 5 / 8
+    assert mt.recall == 5 / 6
+    assert mt.precision == 5 / 8
+
+
+def test_recall_precision_8():
+    data_path = (
+        "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
+    )
+    data = read_json(data_path)
+    preds = {
+        # "optim-optimizer-MomentumSGD": True,
+        # "optim-optimizer-MomentumSGD-momentum": 0.9,
+        "optim-learningrate": 0.4,
+        "optim-weightdecay": True,
+        "optim-lrschedular": True,
+        "batchsize": 256,
+        "epochs": 200,  # 300 -> 200
+        "resource-gpu-T4": True,
+    }
+    mt = Metrics(data, preds)
+    assert mt.get_recall(data, {}) == 0
+    assert mt.get_precision({}, preds) == 0
+    assert mt.recall == 5 / 6
+    assert mt.precision == 5 / 8
+
+
+def test_recall_precision_10():
+    data_path = (
+        "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
+    )
+    data = read_json(data_path)
+    preds = {
+        # "optim-optimizer-MomentumSGD": True,
+        # "optim-optimizer-MomentumSGD-momentum": 0.9,
+        "optim-learningrate": 0.4,
+        "optim-weightdecay": True,
+        "optim-lrschedular": True,
+        "batchsize": 256,
+        "epochs": 200,  # 300 -> 200
+        "resource-gpu-T4": True,
+    }
+    mt = Metrics(data, preds)
+    assert mt.get_recall(data, data) == 1.0
+    assert mt.get_precision(preds, preds) == 1.0
+    assert mt.recall == 5 / 6
+    assert mt.precision == 5 / 8
