@@ -18,7 +18,7 @@ def test_clean_values_1():
     data_path = "tests/data/Attention_Augmented_Convolutional_Networks.json"
     data = read_json(data_path)
     assert type(data) == dict
-    assert clean_values(data) == {"epochs": [150]}
+    assert clean_values(data) == {"epochs": {150}}
 
 
 def test_clean_values_2():
@@ -29,12 +29,12 @@ def test_clean_values_2():
     assert type(data) == dict
     true_dct = {
         "optim-optimizer-MomentumSGD": True,
-        "optim-optimizer-MomentumSGD-momentum": [0.9],
-        "optim-learningrate": [0.4],
+        "optim-optimizer-MomentumSGD-momentum": {0.9},
+        "optim-learningrate": {0.4},
         "optim-weightdecay": True,
         "optim-lrschedular": True,
-        "batchsize": [256],
-        "epochs": [300],
+        "batchsize": {256},
+        "epochs": {300},
         "resource-gpu-T4": True,
     }
     assert clean_values(data) == true_dct

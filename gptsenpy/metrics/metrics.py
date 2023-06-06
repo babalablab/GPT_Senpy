@@ -16,19 +16,20 @@ def clean_values(values: dict[str, Any]) -> dict[str, Any]:
 
     """
     assert isinstance(values, dict), "Values must be a dict"
-    ret_dict: dict[str, list | bool] = {}
+    ret_dict: dict[str, bool | set | int | float] = {}
 
     for k, v in values.items():
         if v is None or v is False:
             continue
         if isinstance(v, bool):
             ret_dict[k] = v
-        elif isinstance(v, list):
-            ret_dict[k] = list(set(v))
-        elif isinstance(v, int) or isinstance(v, float):
-            ret_dict[k] = [v]
+        elif isinstance(v, (list, set)):
+            ret_dict[k] = set(v)
+        elif isinstance(v, (int, float)):
+            ret_dict[k] = set([v])
         else:
             raise ValueError("Value must be a bool, list, int, or float")
+
     return ret_dict
 
 
@@ -45,7 +46,7 @@ def get_denominator(values: dict[str, Any]) -> int:
     """
     ret = 0
     for v in values.values():
-        if isinstance(v, list):
+        if isinstance(v, (list, set)):
             ret += len(v)
         else:
             ret += 1
@@ -68,20 +69,20 @@ class Metrics:
         preds = self.get_value_if_none(preds, "preds")
         if len(labels) == 0:
             return 0.0
-        else:
-            numerator = 0
-            for k, v in labels.items():
-                if k not in preds.keys():
-                    continue
-                if isinstance(v, list):
-                    for vv in v:
-                        if vv in preds[k]:
-                            numerator += 1
-                            break
-                else:
-                    if preds[k] == v:
+
+        denominator = get_denominator(labels)
+        numerator = 0
+        for k, v in labels.items():
+            if k not in preds.keys():
+                continue
+            if isinstance(v, (list, set)):
+                for vv in v:
+                    if vv in preds[k]:
                         numerator += 1
-            denominator = get_denominator(labels)
+                        break
+            else:
+                if preds[k] == v:
+                    numerator += 1
 
         return numerator / denominator
 
@@ -93,22 +94,20 @@ class Metrics:
 
         if len(preds) == 0:
             return 0.0
-        else:
-            numerator = 0
-            for k, v in preds.items():
-                if k not in labels.keys():
-                    continue
+        numerator = 0
+        denominator = get_denominator(preds)
+        for k, v in preds.items():
+            if k not in labels.keys():
+                continue
 
-                if isinstance(v, list):
-                    for vv in v:
-                        if vv in labels[k]:
-                            numerator += 1
-                            break
-                else:
-                    if labels[k] == v:
+            if isinstance(v, (list, set)):
+                for vv in v:
+                    if vv in labels[k]:
                         numerator += 1
-
-            denominator = get_denominator(preds)
+                        break
+            else:
+                if labels[k] == v:
+                    numerator += 1
 
         return numerator / denominator
 
