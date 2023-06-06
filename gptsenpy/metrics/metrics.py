@@ -3,16 +3,53 @@ from typing import Any, Optional
 
 def clean_values(values: dict[str, Any]) -> dict[str, Any]:
     """
-    remove key from dict if value is null
+    Remove keys from the dictionary if the corresponding value is null.
+
     Args:
-        values: annotation infomations
+        values (dict[str, Any]): Annotation information.
 
     Returns:
-        anotaion information without null values
+        dict[str, Any]: Annotation information without null values.
+
+    Raises:
+        ValueError: If the value is not of type bool, list, int, or float.
 
     """
     assert isinstance(values, dict), "Values must be a dict"
-    return {k: v for k, v in values.items() if v is not None and v is not False}
+    ret_dict: dict[str, list | bool] = {}
+
+    for k, v in values.items():
+        if v is None or v is False:
+            continue
+        if isinstance(v, bool):
+            ret_dict[k] = v
+        elif isinstance(v, list):
+            ret_dict[k] = list(set(v))
+        elif isinstance(v, int) or isinstance(v, float):
+            ret_dict[k] = [v]
+        else:
+            raise ValueError("Value must be a bool, list, int, or float")
+    return ret_dict
+
+
+def get_denominator(values: dict[str, Any]) -> int:
+    """
+    Calculate the denominator value based on the given dictionary.
+
+    Args:
+        values (dict[str, Any]): Dictionary containing values.
+
+    Returns:
+        int: The calculated denominator value.
+
+    """
+    ret = 0
+    for v in values.values():
+        if isinstance(v, list):
+            ret += len(v)
+        else:
+            ret += 1
+    return ret
 
 
 class Metrics:
@@ -32,13 +69,21 @@ class Metrics:
         if len(labels) == 0:
             return 0.0
         else:
-            numerator = sum(
-                [
-                    1 if k in preds.keys() and preds[k] == v else 0
-                    for k, v in labels.items()
-                ]
-            )
-        return numerator / len(labels)
+            numerator = 0
+            for k, v in labels.items():
+                if k not in preds.keys():
+                    continue
+                if isinstance(v, list):
+                    for vv in v:
+                        if vv in preds[k]:
+                            numerator += 1
+                            break
+                else:
+                    if preds[k] == v:
+                        numerator += 1
+            denominator = get_denominator(labels)
+
+        return numerator / denominator
 
     def get_recall(
         self, labels: Optional[dict] = None, preds: Optional[dict] = None
@@ -49,13 +94,23 @@ class Metrics:
         if len(preds) == 0:
             return 0.0
         else:
-            numerator = sum(
-                [
-                    1 if k in labels.keys() and labels[k] == v else 0
-                    for k, v in preds.items()
-                ]
-            )
-        return numerator / len(preds)
+            numerator = 0
+            for k, v in preds.items():
+                if k not in labels.keys():
+                    continue
+
+                if isinstance(v, list):
+                    for vv in v:
+                        if vv in labels[k]:
+                            numerator += 1
+                            break
+                else:
+                    if labels[k] == v:
+                        numerator += 1
+
+            denominator = get_denominator(preds)
+
+        return numerator / denominator
 
     def get_f1(
         self, labels: Optional[dict] = None, preds: Optional[dict] = None

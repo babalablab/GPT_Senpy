@@ -18,7 +18,7 @@ def test_clean_values_1():
     data_path = "tests/data/Attention_Augmented_Convolutional_Networks.json"
     data = read_json(data_path)
     assert type(data) == dict
-    assert clean_values(data) == {"epochs": 150}
+    assert clean_values(data) == {"epochs": [150]}
 
 
 def test_clean_values_2():
@@ -29,12 +29,12 @@ def test_clean_values_2():
     assert type(data) == dict
     true_dct = {
         "optim-optimizer-MomentumSGD": True,
-        "optim-optimizer-MomentumSGD-momentum": 0.9,
-        "optim-learningrate": 0.4,
+        "optim-optimizer-MomentumSGD-momentum": [0.9],
+        "optim-learningrate": [0.4],
         "optim-weightdecay": True,
         "optim-lrschedular": True,
-        "batchsize": 256,
-        "epochs": 300,
+        "batchsize": [256],
+        "epochs": [300],
         "resource-gpu-T4": True,
     }
     assert clean_values(data) == true_dct
@@ -229,3 +229,43 @@ def test_recall_precision_11():
     mt = Metrics(data, preds)
     assert mt.recall == 4 / 5
     assert mt.precision == 4 / 8
+
+
+def test_recall_precision_12():
+    data_path = (
+        "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
+    )
+    data = read_json(data_path)
+    preds = {
+        # "optim-optimizer-MomentumSGD": True,
+        # "optim-optimizer-MomentumSGD-momentum": 0.9,
+        "optim-learningrate": [0.4, 0.7],
+        "optim-weightdecay": True,
+        "optim-lrschedular": True,
+        "batchsize": 256,
+        "epochs": 200,  # 300 -> 200
+        "resource-gpu-T4": True,
+    }
+    mt = Metrics(data, preds)
+    assert mt.recall == 5 / 7
+    assert mt.precision == 5 / 8
+
+
+def test_recall_precision_13():
+    data_path = (
+        "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
+    )
+    data = read_json(data_path)
+    preds = {
+        "optim-optimizer-MomentumSGD": True,
+        "optim-optimizer-MomentumSGD-momentum": [0.9, 0.9],
+        "optim-learningrate": [0.4, 0.9],
+        "optim-weightdecay": True,
+        "optim-lrschedular": True,
+        "batchsize": 256,
+        "epochs": 200,  # 300 -> 200
+        "resource-gpu-T4": True,
+    }
+    mt = Metrics(data, preds)
+    assert mt.recall == 7 / 9
+    assert mt.precision == 7 / 8
