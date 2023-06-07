@@ -1,22 +1,30 @@
-from typing import Any, Optional
+from typing import Optional
 
 
-def clean_values(values: dict[str, Any]) -> dict[str, Any]:
+def clean_values(
+    values: dict[str, bool | list[int | float] | set[int | float]]
+) -> dict[str, bool | set[int | float]]:
     """
-    Remove keys from the dictionary if the corresponding value is null.
+    Cleans a dictionary of values by removing any keys with None or False values, and converting
+    any lists or floats to sets. The resulting dictionary will only contain keys with boolean or
+    set values.
 
     Args:
-        values (dict[str, Any]): Annotation information.
+        values (dict[str, bool | list | set]): A dictionary of values to be cleaned.
 
     Returns:
-        dict[str, Any]: Annotation information without null values.
+        dict[str, bool | set[int | float]]: A cleaned dictionary containing only boolean or set values.
 
     Raises:
-        ValueError: If the value is not of type bool, list, int, or float.
+        ValueError: If a value in the input dictionary is not a bool, list, int, or float.
+
+    Examples:
+        >>> clean_values({'a': True, 'b': False, 'c': [1, 2, 3], 'd': 4.5, 'e': None})
+        {'a': True, 'c': {1, 2, 3}, 'd': {4.5}}
 
     """
     assert isinstance(values, dict), "Values must be a dict"
-    ret_dict: dict[str, bool | set | int | float] = {}
+    ret_dict: dict[str, bool | set[int | float]] = {}
 
     for k, v in values.items():
         if v is None or v is False:
@@ -28,25 +36,31 @@ def clean_values(values: dict[str, Any]) -> dict[str, Any]:
         elif isinstance(v, (int, float)):
             ret_dict[k] = set([v])
         else:
-            raise ValueError("Value must be a bool, list, int, or float")
+            raise ValueError("Value must be a bool, set, list, int, or float")
 
     return ret_dict
 
 
-def get_denominator(values: dict[str, Any]) -> int:
+def get_denominator(values: dict[str, bool | set[int | float]]) -> int:
     """
-    Calculate the denominator value based on the given dictionary.
+    Calculates the denominator for a fraction based on the given dictionary of values.
 
     Args:
-        values (dict[str, Any]): Dictionary containing values.
+        values (dict[str, bool | set]): A dictionary of values where the keys are strings and the values are either boolean or sets of strings.
 
     Returns:
-        int: The calculated denominator value.
+        int: The denominator for the fraction, which is the sum of the number of values in each set and the number of boolean values.
 
+    Raises:
+        TypeError: If the input values are not in the expected format.
+
+    Example:
+        >>> get_denominator({'a': True, 'b': False, 'c': {'d', 'e', 'f'}})
+        4
     """
     ret = 0
     for v in values.values():
-        if isinstance(v, (list, set)):
+        if isinstance(v, set):
             ret += len(v)
         else:
             ret += 1
@@ -54,7 +68,11 @@ def get_denominator(values: dict[str, Any]) -> int:
 
 
 class Metrics:
-    def __init__(self, labels: dict[str, Any], preds: dict[str, Any]):
+    def __init__(
+        self,
+        labels: dict[str, bool | set[int | float] | list[int | float]],
+        preds: dict[str, bool | set[int | float] | list[int | float]],
+    ):
         self.labels = clean_values(labels)
         self.preds = clean_values(preds)
 
@@ -63,7 +81,9 @@ class Metrics:
         self.f1: float = self.get_f1()
 
     def get_recall(
-        self, labels: Optional[dict] = None, preds: Optional[dict] = None
+        self,
+        labels: Optional[dict[str, bool | set[int | float]]] = None,
+        preds: Optional[dict[str, bool | set[int | float]]] = None,
     ) -> float:
         labels = self.get_value_if_none(labels, "labels")
         preds = self.get_value_if_none(preds, "preds")
@@ -75,9 +95,10 @@ class Metrics:
         for k, v in labels.items():
             if k not in preds.keys():
                 continue
-            if isinstance(v, (list, set)):
+            if isinstance(v, set):
                 for vv in v:
-                    if vv in preds[k]:
+                    preds_k = preds[k]
+                    if isinstance(preds_k, set) and vv in preds_k:
                         numerator += 1
                         break
             else:
@@ -87,7 +108,9 @@ class Metrics:
         return numerator / denominator
 
     def get_precision(
-        self, labels: Optional[dict] = None, preds: Optional[dict] = None
+        self,
+        labels: Optional[dict[str, bool | set[int | float]]] = None,
+        preds: Optional[dict[str, bool | set[int | float]]] = None,
     ) -> float:
         labels = self.get_value_if_none(labels, "labels")
         preds = self.get_value_if_none(preds, "preds")
@@ -100,9 +123,10 @@ class Metrics:
             if k not in labels.keys():
                 continue
 
-            if isinstance(v, (list, set)):
+            if isinstance(v, set):
                 for vv in v:
-                    if vv in labels[k]:
+                    labels_k = labels[k]
+                    if isinstance(labels_k, set) and vv in labels_k:
                         numerator += 1
                         break
             else:
@@ -112,7 +136,9 @@ class Metrics:
         return numerator / denominator
 
     def get_f1(
-        self, labels: Optional[dict] = None, preds: Optional[dict] = None
+        self,
+        labels: Optional[dict[str, bool | set[int | float]]] = None,
+        preds: Optional[dict[str, bool | set[int | float]]] = None,
     ) -> float:
         labels = self.get_value_if_none(labels, "labels")
         preds = self.get_value_if_none(preds, "preds")
@@ -126,7 +152,7 @@ class Metrics:
 
     def get_value_if_none(
         self, values: Optional[dict] = None, name: Optional[str] = None
-    ) -> dict[str, Any]:
+    ) -> dict[str, bool | set[int | float]]:
         if values is None and name is not None:
             return getattr(self, name)
         elif values is not None:

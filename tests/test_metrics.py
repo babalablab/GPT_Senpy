@@ -269,3 +269,43 @@ def test_precision_recall_13():
     mt = Metrics(data, preds)
     assert mt.precision == 7 / 9
     assert mt.recall == 7 / 8
+
+
+def test_precision_recall_14():
+    data_path = (
+        "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
+    )
+    data = read_json(data_path)
+    preds = {
+        "optim-optimizer-MomentumSGD": True,
+        "optim-optimizer-MomentumSGD-momentum": [0.9, 0.9],
+        "optim-learningrate": [4e-01],
+        "optim-weightdecay": True,
+        "optim-lrschedular": True,
+        "batchsize": 256,
+        "epochs": 200,  # 300 -> 200
+        "resource-gpu-T4": True,
+    }
+    mt = Metrics(data, preds)
+    assert mt.precision == 7 / 8
+    assert mt.recall == 7 / 8
+
+
+def test_precision_recall_15():
+    data_path = (
+        "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
+    )
+    data = read_json(data_path)
+    preds = {
+        "optim-optimizer-MomentumSGD": True,
+        "optim-optimizer-MomentumSGD-momentum": [9000e-4, 0.9],
+        "optim-learningrate": [4e-01],
+        "optim-weightdecay": True,
+        "optim-lrschedular": True,
+        "batchsize": 256,
+        "epochs": 200,  # 300 -> 200
+        "resource-gpu-T4": True,
+    }
+    mt = Metrics(data, preds)
+    assert mt.precision == 7 / 8
+    assert mt.recall == 7 / 8
