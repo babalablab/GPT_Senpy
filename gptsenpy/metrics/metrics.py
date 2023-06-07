@@ -1,9 +1,11 @@
-from typing import Optional
+from typing import Optional, TypeAlias
+
+Num: TypeAlias = int | float
 
 
 def clean_values(
-    values: dict[str, bool | list[int | float] | set[int | float]]
-) -> dict[str, bool | set[int | float]]:
+    values: dict[str, bool | list[Num] | set[Num]]
+) -> dict[str, bool | set[Num]]:
     """
     Cleans a dictionary of values by removing any keys with None or False values, and converting
     any lists or floats to sets. The resulting dictionary will only contain keys with boolean or
@@ -13,7 +15,7 @@ def clean_values(
         values (dict[str, bool | list | set]): A dictionary of values to be cleaned.
 
     Returns:
-        dict[str, bool | set[int | float]]: A cleaned dictionary containing only boolean or set values.
+        dict[str, bool | set[Num]]: A cleaned dictionary containing only boolean or set values.
 
     Raises:
         ValueError: If a value in the input dictionary is not a bool, list, int, or float.
@@ -24,7 +26,7 @@ def clean_values(
 
     """
     assert isinstance(values, dict), "Values must be a dict"
-    ret_dict: dict[str, bool | set[int | float]] = {}
+    ret_dict: dict[str, bool | set[Num]] = {}
 
     for k, v in values.items():
         if v is None or v is False:
@@ -41,7 +43,7 @@ def clean_values(
     return ret_dict
 
 
-def get_denominator(values: dict[str, bool | set[int | float]]) -> int:
+def get_denominator(values: dict[str, bool | set[Num]]) -> int:
     """
     Calculates the denominator for a fraction based on the given dictionary of values.
 
@@ -70,8 +72,8 @@ def get_denominator(values: dict[str, bool | set[int | float]]) -> int:
 class Metrics:
     def __init__(
         self,
-        labels: dict[str, bool | set[int | float] | list[int | float]],
-        preds: dict[str, bool | set[int | float] | list[int | float]],
+        labels: dict[str, bool | set[Num] | list[Num]],
+        preds: dict[str, bool | set[Num] | list[Num]],
     ):
         self.labels = clean_values(labels)
         self.preds = clean_values(preds)
@@ -82,8 +84,8 @@ class Metrics:
 
     def get_recall(
         self,
-        labels: Optional[dict[str, bool | set[int | float]]] = None,
-        preds: Optional[dict[str, bool | set[int | float]]] = None,
+        labels: Optional[dict[str, bool | set[Num]]] = None,
+        preds: Optional[dict[str, bool | set[Num]]] = None,
     ) -> float:
         labels = self.get_value_if_none(labels, "labels")
         preds = self.get_value_if_none(preds, "preds")
@@ -109,8 +111,8 @@ class Metrics:
 
     def get_precision(
         self,
-        labels: Optional[dict[str, bool | set[int | float]]] = None,
-        preds: Optional[dict[str, bool | set[int | float]]] = None,
+        labels: Optional[dict[str, bool | set[Num]]] = None,
+        preds: Optional[dict[str, bool | set[Num]]] = None,
     ) -> float:
         labels = self.get_value_if_none(labels, "labels")
         preds = self.get_value_if_none(preds, "preds")
@@ -137,8 +139,8 @@ class Metrics:
 
     def get_f1(
         self,
-        labels: Optional[dict[str, bool | set[int | float]]] = None,
-        preds: Optional[dict[str, bool | set[int | float]]] = None,
+        labels: Optional[dict[str, bool | set[Num]]] = None,
+        preds: Optional[dict[str, bool | set[Num]]] = None,
     ) -> float:
         labels = self.get_value_if_none(labels, "labels")
         preds = self.get_value_if_none(preds, "preds")
@@ -152,7 +154,7 @@ class Metrics:
 
     def get_value_if_none(
         self, values: Optional[dict] = None, name: Optional[str] = None
-    ) -> dict[str, bool | set[int | float]]:
+    ) -> dict[str, bool | set[Num]]:
         if values is None and name is not None:
             return getattr(self, name)
         elif values is not None:
