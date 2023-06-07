@@ -62,7 +62,7 @@ class Metrics:
         self.recall: float = self.get_recall()
         self.f1: float = self.get_f1()
 
-    def get_precision(
+    def get_recall(
         self, labels: Optional[dict] = None, preds: Optional[dict] = None
     ) -> float:
         labels = self.get_value_if_none(labels, "labels")
@@ -86,7 +86,7 @@ class Metrics:
 
         return numerator / denominator
 
-    def get_recall(
+    def get_precision(
         self, labels: Optional[dict] = None, preds: Optional[dict] = None
     ) -> float:
         labels = self.get_value_if_none(labels, "labels")

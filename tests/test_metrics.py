@@ -40,39 +40,39 @@ def test_clean_values_2():
     assert clean_values(data) == true_dct
 
 
-def test_recall_precision_0():
+def test_precision_recall_0():
     data_path = "tests/data/annotation_format.json"
     data = read_json(data_path)
     mt = Metrics(data, data)
-    assert mt.recall == 0.0 and mt.precision == 0.0
+    assert mt.precision == 0.0 and mt.recall == 0.0
 
 
-def test_recall_precision_1():
+def test_precision_recall_1():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
     data = read_json(data_path)
     mt = Metrics(data, data)
-    assert mt.recall == 1.0 and mt.precision == 1.0
+    assert mt.precision == 1.0 and mt.recall == 1.0
 
 
-def test_recall_precision_2():
+def test_precision_recall_2():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
     data = read_json(data_path)
     mt = Metrics(data, {})
-    assert mt.recall == 0.0 and mt.precision == 0.0
+    assert mt.precision == 0.0 and mt.recall == 0.0
 
 
-def test_recall_precision_3():
+def test_precision_recall_3():
     data_path = "tests/data/annotation_format.json"
     data = read_json(data_path)
     mt = Metrics(data, {})
-    assert mt.recall == 0.0 and mt.precision == 0.0
+    assert mt.precision == 0.0 and mt.recall == 0.0
 
 
-def test_recall_precision_4():
+def test_precision_recall_4():
     data_path = "tests/data/annotation_format.json"
     data = read_json(data_path)
     true_dct = {
@@ -86,10 +86,10 @@ def test_recall_precision_4():
         "resource-gpu-T4": True,
     }
     mt = Metrics(data, true_dct)
-    assert mt.recall == 0.0 and mt.precision == 0.0
+    assert mt.precision == 0.0 and mt.recall == 0.0
 
 
-def test_recall_precision_7():
+def test_precision_recall_7():
     data_path = "tests/data/annotation_format.json"
     data = read_json(data_path)
     true_dct = {
@@ -103,10 +103,10 @@ def test_recall_precision_7():
         "resource-gpu-T4": True,
     }
     mt = Metrics(true_dct, data)
-    assert mt.recall == 0.0 and mt.precision == 0.0
+    assert mt.precision == 0.0 and mt.recall == 0.0
 
 
-def test_recall_precision_5():
+def test_precision_recall_5():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
@@ -122,10 +122,10 @@ def test_recall_precision_5():
         "resource-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.recall == 7 / 8 and mt.precision == 7 / 8
+    assert mt.precision == 7 / 8 and mt.recall == 7 / 8
 
 
-def test_recall_precision_6():
+def test_precision_recall_6():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
@@ -141,11 +141,11 @@ def test_recall_precision_6():
         "resource-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.recall == 5 / 6
-    assert mt.precision == 5 / 8
+    assert mt.precision == 5 / 6
+    assert mt.recall == 5 / 8
 
 
-def test_recall_precision_9():
+def test_precision_recall_9():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
@@ -161,13 +161,13 @@ def test_recall_precision_9():
         "resource-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.get_recall(data, preds) == 5 / 6
-    assert mt.get_precision(data, preds) == 5 / 8
-    assert mt.recall == 5 / 6
-    assert mt.precision == 5 / 8
+    assert mt.get_precision(data, preds) == 5 / 6
+    assert mt.get_recall(data, preds) == 5 / 8
+    assert mt.precision == 5 / 6
+    assert mt.recall == 5 / 8
 
 
-def test_recall_precision_8():
+def test_precision_recall_8():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
@@ -183,13 +183,13 @@ def test_recall_precision_8():
         "resource-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.get_recall(data, {}) == 0
-    assert mt.get_precision({}, preds) == 0
-    assert mt.recall == 5 / 6
-    assert mt.precision == 5 / 8
+    assert mt.get_precision(data, {}) == 0
+    assert mt.get_recall({}, preds) == 0
+    assert mt.precision == 5 / 6
+    assert mt.recall == 5 / 8
 
 
-def test_recall_precision_10():
+def test_precision_recall_10():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
@@ -205,13 +205,13 @@ def test_recall_precision_10():
         "resource-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.get_recall(data, data) == 1.0
-    assert mt.get_precision(preds, preds) == 1.0
-    assert mt.recall == 5 / 6
-    assert mt.precision == 5 / 8
+    assert mt.get_precision(data, data) == 1.0
+    assert mt.get_recall(preds, preds) == 1.0
+    assert mt.precision == 5 / 6
+    assert mt.recall == 5 / 8
 
 
-def test_recall_precision_11():
+def test_precision_recall_11():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
@@ -227,11 +227,11 @@ def test_recall_precision_11():
         "resource-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.recall == 4 / 5
-    assert mt.precision == 4 / 8
+    assert mt.precision == 4 / 5
+    assert mt.recall == 4 / 8
 
 
-def test_recall_precision_12():
+def test_precision_recall_12():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
@@ -247,11 +247,11 @@ def test_recall_precision_12():
         "resource-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.recall == 5 / 7
-    assert mt.precision == 5 / 8
+    assert mt.precision == 5 / 7
+    assert mt.recall == 5 / 8
 
 
-def test_recall_precision_13():
+def test_precision_recall_13():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
@@ -267,5 +267,5 @@ def test_recall_precision_13():
         "resource-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.recall == 7 / 9
-    assert mt.precision == 7 / 8
+    assert mt.precision == 7 / 9
+    assert mt.recall == 7 / 8
