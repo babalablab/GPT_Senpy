@@ -4,7 +4,7 @@ sys.path.append("../gptsenpy")
 
 from gptsenpy.io.read import read_json
 from gptsenpy.metrics import Metrics
-from gptsenpy.metrics.metrics import clean_values
+from gptsenpy.utils import clean_values
 
 
 def test_clean_values_null():
