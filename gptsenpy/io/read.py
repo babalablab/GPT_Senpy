@@ -2,7 +2,6 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Dict, Union
 
 
 def check_duplicate_keys(pairs):
@@ -16,13 +15,13 @@ def check_duplicate_keys(pairs):
     return dict(pairs)
 
 
-def read_json(path: Union[Path, str]) -> Dict[str, str]:
+def read_json(path: Path | str) -> dict:
     with open(path, "r") as f:
         data = json.load(f, object_pairs_hook=check_duplicate_keys)
     return data
 
 
-def read_text(path: Union[Path, str]) -> str:
+def read_text(path: Path | str) -> str:
     with open(path, "r") as f:
         data = f.read()
     data = data.rstrip()
