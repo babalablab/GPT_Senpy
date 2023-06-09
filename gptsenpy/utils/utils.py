@@ -70,6 +70,29 @@ def get_denominator(values: dict[str, bool | set[Num]]) -> int:
 
 
 def concat_json_result(results: list[dict[str, Any]]) -> dict[str, set[Num] | bool]:
+    """
+    Merges a list of dictionaries into a single dictionary.
+
+    The function iterates over each dictionary in the input list. It cleans the values of each
+    dictionary using the `clean_values` function. Then, for each key-value pair in the cleaned
+    dictionary, if the key is not already in the merged dictionary, it adds the key-value pair.
+    If the key is already present, it performs a logical OR operation for boolean values, or a set
+    union operation for set values.
+
+    If a value is not a boolean or a set, it raises a TypeError.
+
+    The merged dictionary is cleaned with `clean_values` function at the end of each iteration.
+
+    Args:
+        results: A list of dictionaries. The dictionaries should contain keys of type str and
+                 values of type set of numbers (Num) or bool.
+
+    Returns:
+        A merged dictionary with keys of type str and values of type set of numbers (Num) or bool.
+
+    Raises:
+        TypeError: If a value in the dictionary is not a boolean or a set.
+    """
     merged_dict = {}
     for result in results:
         cleaned_result = clean_values(result)
