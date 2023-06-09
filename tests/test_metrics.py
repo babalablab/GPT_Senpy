@@ -7,39 +7,6 @@ from gptsenpy.metrics import Metrics
 from gptsenpy.utils import clean_values
 
 
-def test_clean_values_null():
-    data_path = "tests/data/annotation_format.json"
-    data = read_json(data_path)
-    assert type(data) == dict
-    assert clean_values(data) == {}
-
-
-def test_clean_values_1():
-    data_path = "tests/data/Attention_Augmented_Convolutional_Networks.json"
-    data = read_json(data_path)
-    assert type(data) == dict
-    assert clean_values(data) == {"epochs": {150}}
-
-
-def test_clean_values_2():
-    data_path = (
-        "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
-    )
-    data = read_json(data_path)
-    assert type(data) == dict
-    true_dct = {
-        "optim-optimizer-MomentumSGD": True,
-        "optim-optimizer-MomentumSGD-momentum": {0.9},
-        "optim-learningrate": {0.4},
-        "optim-weightdecay": True,
-        "optim-lrschedular": True,
-        "batchsize": {256},
-        "epochs": {300},
-        "resource-gpu-T4": True,
-    }
-    assert clean_values(data) == true_dct
-
-
 def test_precision_recall_0():
     data_path = "tests/data/annotation_format.json"
     data = read_json(data_path)

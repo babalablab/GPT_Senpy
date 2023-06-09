@@ -1,4 +1,4 @@
-from typing import Optional, TypeAlias
+from typing import Any, Optional, TypeAlias
 
 Num: TypeAlias = int | float
 
@@ -67,3 +67,21 @@ def get_denominator(values: dict[str, bool | set[Num]]) -> int:
         else:
             ret += 1
     return ret
+
+
+def concat_json_result(results: list[dict[str, Any]]) -> dict[str, set[Num] | bool]:
+    merged_dict = {}
+    for result in results:
+        cleaned_result = clean_values(result)
+
+        for k, v in cleaned_result.items():
+            if k not in merged_dict:
+                merged_dict[k] = v
+            elif isinstance(v, bool):
+                merged_dict[k] = merged_dict[k] or v
+            elif isinstance(v, set):
+                merged_dict[k] = merged_dict[k] | v  # type: ignore
+            else:
+                raise TypeError("Unexpected type in result")
+        merged_dict = clean_values(merged_dict)  # type: ignore
+    return merged_dict
