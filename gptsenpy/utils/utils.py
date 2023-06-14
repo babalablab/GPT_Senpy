@@ -1,4 +1,4 @@
-from typing import Any, TypeAlias
+from typing import Any, Optional, TypeAlias
 
 
 Num: TypeAlias = int | float
@@ -56,7 +56,7 @@ DEFAULT_KEY = ['optim-optimizer-Adadelta',
 
 def clean_values(
     values: dict[str, bool | list[Num] | set[Num]],
-    key_lst: list[str] = None,
+    key_lst: Optional[list[str]] = None,
 ) -> dict[str, bool | set[Num]]:
     """
     Cleans a dictionary of values by removing any keys with None or False values, and converting
