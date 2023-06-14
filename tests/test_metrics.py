@@ -46,11 +46,11 @@ def test_precision_recall_4():
         "optim-optimizer-MomentumSGD": True,
         "optim-optimizer-MomentumSGD-momentum": 0.9,
         "optim-learningrate": 0.4,
-        "optim-weightdecay": True,
-        "optim-lrschedular": True,
+        "optim-weightdecay": 0.0001,
+        "optim-lrscheduler-LambdaLR": True,
         "batchsize": 256,
         "epochs": 300,
-        "resource-gpu-T4": True,
+        "resource-train-gpu-T4": True,
     }
     mt = Metrics(data, true_dct)
     assert mt.precision == 0.0 and mt.recall == 0.0
@@ -63,11 +63,11 @@ def test_precision_recall_7():
         "optim-optimizer-MomentumSGD": True,
         "optim-optimizer-MomentumSGD-momentum": 0.9,
         "optim-learningrate": 0.4,
-        "optim-weightdecay": True,
-        "optim-lrschedular": True,
+        "optim-weightdecay": 0.0001,
+        "optim-lrscheduler-LambdaLR": True,
         "batchsize": 256,
         "epochs": 300,
-        "resource-gpu-T4": True,
+        "resource-train-gpu-T4": True,
     }
     mt = Metrics(true_dct, data)
     assert mt.precision == 0.0 and mt.recall == 0.0
@@ -82,14 +82,15 @@ def test_precision_recall_5():
         "optim-optimizer-MomentumSGD": True,
         "optim-optimizer-MomentumSGD-momentum": 0.9,
         "optim-learningrate": 0.4,
-        "optim-weightdecay": True,
-        "optim-lrschedular": True,
+        "optim-weightdecay": 0.0005,
+        "optim-lrscheduler-CosineAnnealingLR": True,
         "batchsize": 256,
         "epochs": 200,  # 300 -> 200
-        "resource-gpu-T4": True,
+        "resource-train-gpu-T4": True,
+        "resource-inference-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.precision == 7 / 8 and mt.recall == 7 / 8
+    assert mt.precision == 8 / 9 and mt.recall == 8 / 9
 
 
 def test_precision_recall_6():
@@ -101,15 +102,16 @@ def test_precision_recall_6():
         # "optim-optimizer-MomentumSGD": True,
         # "optim-optimizer-MomentumSGD-momentum": 0.9,
         "optim-learningrate": 0.4,
-        "optim-weightdecay": True,
-        "optim-lrschedular": True,
+        "optim-weightdecay": 0.0005,
+        "optim-lrscheduler-CosineAnnealingLR": True,
         "batchsize": 256,
         "epochs": 200,  # 300 -> 200
-        "resource-gpu-T4": True,
+        "resource-train-gpu-T4": True,
+        "resource-inference-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.precision == 5 / 6
-    assert mt.recall == 5 / 8
+    assert mt.precision == 6 / 7
+    assert mt.recall == 6 / 9
 
 
 def test_precision_recall_9():
@@ -121,17 +123,18 @@ def test_precision_recall_9():
         # "optim-optimizer-MomentumSGD": True,
         # "optim-optimizer-MomentumSGD-momentum": 0.9,
         "optim-learningrate": 0.4,
-        "optim-weightdecay": True,
-        "optim-lrschedular": True,
+        "optim-weightdecay": 0.0005,
+        "optim-lrscheduler-CosineAnnealingLR": True,
         "batchsize": 256,
         "epochs": 200,  # 300 -> 200
-        "resource-gpu-T4": True,
+        "resource-train-gpu-T4": True,
+        "resource-inference-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.get_precision(data, preds) == 5 / 6
-    assert mt.get_recall(data, preds) == 5 / 8
-    assert mt.precision == 5 / 6
-    assert mt.recall == 5 / 8
+    assert mt.get_precision(data, preds) == 6 / 7
+    assert mt.get_recall(data, preds) == 6 / 9
+    assert mt.precision == 6 / 7
+    assert mt.recall == 6 / 9
 
 
 def test_precision_recall_8():
@@ -143,17 +146,18 @@ def test_precision_recall_8():
         # "optim-optimizer-MomentumSGD": True,
         # "optim-optimizer-MomentumSGD-momentum": 0.9,
         "optim-learningrate": 0.4,
-        "optim-weightdecay": True,
-        "optim-lrschedular": True,
+        "optim-weightdecay": 0.0005,
+        "optim-lrscheduler-CosineAnnealingLR": True,
         "batchsize": 256,
         "epochs": 200,  # 300 -> 200
-        "resource-gpu-T4": True,
+        "resource-train-gpu-T4": True,
+        "resource-inference-gpu-T4": True,
     }
     mt = Metrics(data, preds)
     assert mt.get_precision(data, {}) == 0
     assert mt.get_recall({}, preds) == 0
-    assert mt.precision == 5 / 6
-    assert mt.recall == 5 / 8
+    assert mt.precision == 6 / 7
+    assert mt.recall == 6 / 9
 
 
 def test_precision_recall_10():
@@ -165,17 +169,18 @@ def test_precision_recall_10():
         # "optim-optimizer-MomentumSGD": True,
         # "optim-optimizer-MomentumSGD-momentum": 0.9,
         "optim-learningrate": 0.4,
-        "optim-weightdecay": True,
-        "optim-lrschedular": True,
+        "optim-weightdecay": 0.0005,
+        "optim-lrscheduler-CosineAnnealingLR": True,
         "batchsize": 256,
         "epochs": 200,  # 300 -> 200
-        "resource-gpu-T4": True,
+        "resource-train-gpu-T4": True,
+        "resource-inference-gpu-T4": True,
     }
     mt = Metrics(data, preds)
     assert mt.get_precision(data, data) == 1.0
     assert mt.get_recall(preds, preds) == 1.0
-    assert mt.precision == 5 / 6
-    assert mt.recall == 5 / 8
+    assert mt.precision == 6 / 7
+    assert mt.recall == 6 / 9
 
 
 def test_precision_recall_11():
@@ -187,15 +192,16 @@ def test_precision_recall_11():
         # "optim-optimizer-MomentumSGD": True,
         # "optim-optimizer-MomentumSGD-momentum": 0.9,
         "optim-learningrate": 0.4,
-        "optim-weightdecay": True,
-        "optim-lrschedular": False,
+        "optim-weightdecay": 0.0005,
+        "optim-lrscheduler-CosineAnnealingLR": False,
         "batchsize": 256,
         "epochs": 200,  # 300 -> 200
-        "resource-gpu-T4": True,
+        "resource-train-gpu-T4": True,
+        "resource-inference-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.precision == 4 / 5
-    assert mt.recall == 4 / 8
+    assert mt.precision == 5 / 6
+    assert mt.recall == 5 / 9
 
 
 def test_precision_recall_12():
@@ -207,15 +213,16 @@ def test_precision_recall_12():
         # "optim-optimizer-MomentumSGD": True,
         # "optim-optimizer-MomentumSGD-momentum": 0.9,
         "optim-learningrate": [0.4, 0.7],
-        "optim-weightdecay": True,
-        "optim-lrschedular": True,
+        "optim-weightdecay": 0.0005,
+        "optim-lrscheduler-CosineAnnealingLR": True,
         "batchsize": 256,
         "epochs": 200,  # 300 -> 200
-        "resource-gpu-T4": True,
+        "resource-train-gpu-T4": True,
+        "resource-inference-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.precision == 5 / 7
-    assert mt.recall == 5 / 8
+    assert mt.precision == 6 / 8
+    assert mt.recall == 6 / 9
 
 
 def test_precision_recall_13():
@@ -227,15 +234,16 @@ def test_precision_recall_13():
         "optim-optimizer-MomentumSGD": True,
         "optim-optimizer-MomentumSGD-momentum": [0.9, 0.9],
         "optim-learningrate": [0.4, 0.9],
-        "optim-weightdecay": True,
-        "optim-lrschedular": True,
+        "optim-weightdecay": 0.0005,
+        "optim-lrscheduler-CosineAnnealingLR": True,
         "batchsize": 256,
         "epochs": 200,  # 300 -> 200
-        "resource-gpu-T4": True,
+        "resource-train-gpu-T4": True,
+        "resource-inference-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.precision == 7 / 9
-    assert mt.recall == 7 / 8
+    assert mt.precision == 8 / 10
+    assert mt.recall == 8 / 9
 
 
 def test_precision_recall_14():
@@ -247,15 +255,16 @@ def test_precision_recall_14():
         "optim-optimizer-MomentumSGD": True,
         "optim-optimizer-MomentumSGD-momentum": [0.9, 0.9],
         "optim-learningrate": [4e-01],
-        "optim-weightdecay": True,
-        "optim-lrschedular": True,
+        "optim-weightdecay": 0.0005,
+        "optim-lrscheduler-CosineAnnealingLR": True,
         "batchsize": 256,
         "epochs": 200,  # 300 -> 200
-        "resource-gpu-T4": True,
+        "resource-train-gpu-T4": True,
+        "resource-inference-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.precision == 7 / 8
-    assert mt.recall == 7 / 8
+    assert mt.precision == 8 / 9
+    assert mt.recall == 8 / 9
 
 
 def test_precision_recall_15():
@@ -267,12 +276,13 @@ def test_precision_recall_15():
         "optim-optimizer-MomentumSGD": True,
         "optim-optimizer-MomentumSGD-momentum": [9000e-4, 0.9],
         "optim-learningrate": [4e-01],
-        "optim-weightdecay": True,
-        "optim-lrschedular": True,
+        "optim-weightdecay": 0.0005,
+        "optim-lrscheduler-CosineAnnealingLR": True,
         "batchsize": 256,
         "epochs": 200,  # 300 -> 200
-        "resource-gpu-T4": True,
+        "resource-train-gpu-T4": True,
+        "resource-inference-gpu-T4": True,
     }
     mt = Metrics(data, preds)
-    assert mt.precision == 7 / 8
-    assert mt.recall == 7 / 8
+    assert mt.precision == 8 / 9
+    assert mt.recall == 8 / 9

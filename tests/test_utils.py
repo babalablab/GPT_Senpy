@@ -29,11 +29,12 @@ def test_clean_values_2():
         "optim-optimizer-MomentumSGD": True,
         "optim-optimizer-MomentumSGD-momentum": {0.9},
         "optim-learningrate": {0.4},
-        "optim-weightdecay": True,
-        "optim-lrschedular": True,
+        "optim-weightdecay": {0.0005},
+        "optim-lrscheduler-CosineAnnealingLR": True,
         "batchsize": {256},
         "epochs": {300},
-        "resource-gpu-T4": True,
+        "resource-train-gpu-T4": True,
+        "resource-inference-gpu-T4": True,
     }
     assert clean_values(data) == true_dct
 
@@ -44,36 +45,110 @@ def test_clean_values_3():
     )
     data = read_json(data_path)
     assert type(data) == dict
-    key_lst = ["optim-optimizer-Adam",
-               "optim-optimizer-MomentumSGD",
-               "optim-optimizer-MomentumSGD-momentum",
-               "not_exist_0",
-               "not_exist_1"]
-    true_dct = {"optim-optimizer-MomentumSGD": True,
-                "optim-optimizer-MomentumSGD-momentum": {0.9}}
+    key_lst = [
+        "optim-optimizer-Adam",
+        "optim-optimizer-MomentumSGD",
+        "optim-optimizer-MomentumSGD-momentum",
+        "not_exist_0",
+        "not_exist_1",
+    ]
+    true_dct = {
+        "optim-optimizer-MomentumSGD": True,
+        "optim-optimizer-MomentumSGD-momentum": {0.9},
+    }
     assert clean_values(data, key_lst) == true_dct
 
 
 def test_concat_json_0():
-    dct1 = {"a": 0, "b": True, "c": False, "d": 5e-5}
-    dct2 = {"a": 1, "b": False, "c": False, "d": 5e-5}
-    dct3 = {"a": 1, "b": False, "c": False, "d": 5e-5, "e": 5510}
-    expected = {"a": {0, 1}, "b": True, "d": {5e-5}, "e": {5510}}
+    dct1 = {
+        "epochs": 0,
+        "optim-optimizer-Adam": True,
+        "optim-lrscheduler-CosineAnnealingLR": False,
+        "optim-weightdecay": 5e-5,
+    }
+    dct2 = {
+        "epochs": 1,
+        "optim-optimizer-Adam": False,
+        "optim-lrscheduler-CosineAnnealingLR": False,
+        "optim-weightdecay": 5e-5,
+    }
+    dct3 = {
+        "epochs": 1,
+        "optim-optimizer-Adam": False,
+        "optim-lrscheduler-CosineAnnealingLR": False,
+        "optim-weightdecay": 5e-5,
+        "iterations": 5510,
+    }
+    expected = {
+        "epochs": {0, 1},
+        "optim-optimizer-Adam": True,
+        "optim-weightdecay": {5e-5},
+        "iterations": {5510},
+    }
     assert concat_json_result([dct1, dct2, dct3]) == expected
 
 
 def test_concat_json_1():
-    dct1 = {"a": 0, "b": True, "c": False, "d": 5e-5}
-    dct2 = {"a": 1, "b": False, "c": False, "d": 5e-5}
-    dct3 = {"a": 1, "b": False, "c": False, "d": 0.00005, "e": 5510}
-    expected = {"a": {0, 1}, "b": True, "d": {5e-5}, "e": {5510}}
+    dct1 = {
+        "epochs": 0,
+        "optim-optimizer-Adam": True,
+        "optim-lrscheduler-CosineAnnealingLR": False,
+        "optim-weightdecay": 5e-5,
+    }
+    dct2 = {
+        "epochs": 1,
+        "optim-optimizer-Adam": False,
+        "optim-lrscheduler-CosineAnnealingLR": False,
+        "optim-weightdecay": 5e-5,
+    }
+    dct3 = {
+        "epochs": 1,
+        "optim-optimizer-Adam": False,
+        "optim-lrscheduler-CosineAnnealingLR": False,
+        "optim-weightdecay": 0.00005,
+        "iterations": 5510,
+    }
+    expected = {
+        "epochs": {0, 1},
+        "optim-optimizer-Adam": True,
+        "optim-weightdecay": {5e-5},
+        "iterations": {5510},
+    }
     assert concat_json_result([dct1, dct2, dct3]) == expected
 
 
 def test_concat_json_2():
-    dct1 = {"a": 0, "b": True, "c": False, "d": 5e-5}
-    dct2 = {"a": 1, "b": False, "c": False, "d": 5e-5}
-    dct3 = {"a": 1, "b": False, "c": False, "d": 0.00005, "e": 5510}
-    dct4 = {"a": 1, "b": False, "c": False, "d": 0.00005, "f": 1e5}
-    expected = {"a": {0, 1}, "b": True, "d": {5e-5}, "e": {5510}, "f": {100000}}
+    dct1 = {
+        "epochs": 0,
+        "optim-optimizer-Adam": True,
+        "optim-lrscheduler-CosineAnnealingLR": False,
+        "optim-weightdecay": 5e-5,
+    }
+    dct2 = {
+        "epochs": 1,
+        "optim-optimizer-Adam": False,
+        "optim-lrscheduler-CosineAnnealingLR": False,
+        "optim-weightdecay": 5e-5,
+    }
+    dct3 = {
+        "epochs": 1,
+        "optim-optimizer-Adam": False,
+        "optim-lrscheduler-CosineAnnealingLR": False,
+        "optim-weightdecay": 0.00005,
+        "iterations": 5510,
+    }
+    dct4 = {
+        "epochs": 1,
+        "optim-optimizer-Adam": False,
+        "optim-lrscheduler-CosineAnnealingLR": False,
+        "optim-weightdecay": 0.00005,
+        "FPS": 1e5,
+    }
+    expected = {
+        "epochs": {0, 1},
+        "optim-optimizer-Adam": True,
+        "optim-weightdecay": {5e-5},
+        "iterations": {5510},
+        "FPS": {100000},
+    }
     assert concat_json_result([dct1, dct2, dct3, dct4]) == expected
