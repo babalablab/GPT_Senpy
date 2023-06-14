@@ -38,6 +38,22 @@ def test_clean_values_2():
     assert clean_values(data) == true_dct
 
 
+def test_clean_values_3():
+    data_path = (
+        "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
+    )
+    data = read_json(data_path)
+    assert type(data) == dict
+    key_lst = ["optim-optimizer-Adam",
+               "optim-optimizer-MomentumSGD",
+               "optim-optimizer-MomentumSGD-momentum",
+               "not_exist_0",
+               "not_exist_1"]
+    true_dct = {"optim-optimizer-MomentumSGD": True,
+                "optim-optimizer-MomentumSGD-momentum": {0.9}}
+    assert clean_values(data, key_lst) == true_dct
+
+
 def test_concat_json_0():
     dct1 = {"a": 0, "b": True, "c": False, "d": 5e-5}
     dct2 = {"a": 1, "b": False, "c": False, "d": 5e-5}
