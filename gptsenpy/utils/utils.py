@@ -1,10 +1,77 @@
 from typing import Any, Optional, TypeAlias
 
+
 Num: TypeAlias = int | float
+DEFAULT_KEY = [
+    "optim-optimizer-Adadelta",
+    "optim-optimizer-Adagrad",
+    "optim-optimizer-Adam",
+    "optim-optimizer-AdamW",
+    "optim-optimizer-SparseAdam",
+    "optim-optimizer-Adamax",
+    "optim-optimizer-ASGD",
+    "optim-optimizer-LBFGS",
+    "optim-optimizer-NAdam",
+    "optim-optimizer-RAdam",
+    "optim-optimizer-RMSprop",
+    "optim-optimizer-Rprop",
+    "optim-optimizer-SGD",
+    "optim-optimizer-MomentumSGD",
+    "optim-optimizer-MomentumSGD-momentum",
+    "optim-learningrate",
+    "optim-weightdecay",
+    "optim-lrscheduler-LambdaLR",
+    "optim-lrscheduler-MultiplicativeLR",
+    "optim-lrscheduler-StepLR",
+    "optim-lrscheduler-MultiStepLR",
+    "optim-lrscheduler-ConstantLR",
+    "optim-lrscheduler-LinearLR",
+    "optim-lrscheduler-ExponentialLR",
+    "optim-lrscheduler-PolynomialLR",
+    "optim-lrscheduler-CosineAnnealingLR",
+    "optim-lrscheduler-ChainedScheduler",
+    "optim-lrscheduler-SequentialLR",
+    "optim-lrscheduler-ReduceLROnPlateau",
+    "optim-lrscheduler-CyclicLR",
+    "optim-lrscheduler-OneCycleLR",
+    "optim-lrscheduler-CosineAnnealingWarmRestarts",
+    "optim-earlystopping",
+    "batchsize",
+    "iterations",
+    "epochs",
+    "FPS",
+    "runtime-train",
+    "runtime-inference",
+    "resource-train-gpu-V100",
+    "resource-train-gpu-T4",
+    "resource-train-gpu-P100",
+    "resource-train-gpu-A100",
+    "resource-train-gpu-M40",
+    "resource-train-tpu-v3",
+    "resource-train-tpu-v4",
+    "resource-train-gpu-GTX1660Ti",
+    "resource-train-gpu-RTX2070",
+    "resource-train-gpu-RTX3080",
+    "resource-train-gpu-num",
+    "resource-train-gpu-memory",
+    "resource-inference-gpu-V100",
+    "resource-inference-gpu-T4",
+    "resource-inference-gpu-P100",
+    "resource-inference-gpu-A100",
+    "resource-inference-gpu-M40",
+    "resource-inference-tpu-v3",
+    "resource-inference-tpu-v4",
+    "resource-inference-gpu-GTX1660Ti",
+    "resource-inference-gpu-RTX2070",
+    "resource-inference-gpu-RTX3080",
+    "resource-inference-gpu-num",
+    "resource-inference-gpu-memory",
+]
 
 
 def clean_values(
-    values: dict[str, bool | list[Num] | set[Num]]
+    values: dict[str, bool | list[Num] | set[Num]],
+    key_lst: Optional[list[str]] = None,
 ) -> dict[str, bool | set[Num]]:
     """
     Cleans a dictionary of values by removing any keys with None or False values, and converting
@@ -13,6 +80,8 @@ def clean_values(
 
     Args:
         values (dict[str, bool | list | set]): A dictionary of values to be cleaned.
+
+        key_lst (list[str]): A list of keys. 'DEFAULT_KEY' is used by default.
 
     Returns:
         dict[str, bool | set[Num]]: A cleaned dictionary containing only boolean or set values.
@@ -28,7 +97,11 @@ def clean_values(
     assert isinstance(values, dict), "Values must be a dict"
     ret_dict: dict[str, bool | set[Num]] = {}
 
-    for k, v in values.items():
+    keys = DEFAULT_KEY if key_lst is None else key_lst
+    for k in keys:
+        if k not in values:
+            continue
+        v = values[k]
         if v is None or v is False:
             continue
         if isinstance(v, bool):
