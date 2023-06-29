@@ -63,11 +63,8 @@ class Tokenizer:
         """
         tokens = self._encode(text)
         divided_tokens = []
-        if len(tokens) > max_tokens:
-            for i in range(0, len(tokens), max_tokens):
-                divided_tokens.append(tokens[i : i + max_tokens])
-        else:
-            divided_tokens = [tokens]
+        for i in range(0, len(tokens), max_tokens):
+            divided_tokens.append(tokens[i : i + max_tokens])
         divided_texts = [self._decode(token) for token in divided_tokens]
         return divided_texts
 
