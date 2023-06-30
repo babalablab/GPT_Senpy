@@ -39,8 +39,8 @@ class PDFLoader:
         """
         if pno == -1 or pno >= self.page_count:
             _texts = [
-                (" ".join(l.get_text().splitlines())).replace("- ", "")
-                for l in self.doc
+                (" ".join(page.get_text().splitlines())).replace("- ", "")
+                for page in self.doc
             ]
             texts = " ".join(_texts)
             return texts
@@ -65,5 +65,5 @@ class PDFLoader:
         """
         text = self.get_page_text(-1)
         sections = re.split(pattern, text)
-        sections = [section for section in sections if section.strip()]
+        sections = [section.strip() for section in sections]
         return sections

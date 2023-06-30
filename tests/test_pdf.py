@@ -1,8 +1,6 @@
 import sys
 from pathlib import Path
 
-import pytest
-
 sys.path.append("../gptsenpy")
 DATA_PATH = Path("tests/data")
 
@@ -61,6 +59,7 @@ def test_divide_sections_1():
     sections = pdfloader.split_sections()
     tokenizer = Tokenizer("gpt-3.5-turbo")
     ret = tokenizer.divide_text_by_max_token(sections[0], max_tokens=10)
+    # section[0]のtoken数は379だからlen(ret)=38
     assert len(ret) == 38
 
 
