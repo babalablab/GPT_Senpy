@@ -12,6 +12,8 @@ def test_precision_recall_0():
     data = read_json(data_path)
     mt = Metrics(data, data)
     assert mt.precision == 0.0 and mt.recall == 0.0
+    score_dict = {"precision": 0.0, "recall": 0.0, "f1": 0.0}
+    assert mt.export_dict() == score_dict
 
 
 def test_precision_recall_1():
@@ -21,6 +23,8 @@ def test_precision_recall_1():
     data = read_json(data_path)
     mt = Metrics(data, data)
     assert mt.precision == 1.0 and mt.recall == 1.0
+    score_dict = {"precision": 1.0, "recall": 1.0, "f1": 1.0}
+    assert mt.export_dict() == score_dict
 
 
 def test_precision_recall_2():
@@ -30,6 +34,8 @@ def test_precision_recall_2():
     data = read_json(data_path)
     mt = Metrics(data, {})
     assert mt.precision == 0.0 and mt.recall == 0.0
+    score_dict = {"precision": 0.0, "recall": 0.0, "f1": 0.0}
+    assert mt.export_dict() == score_dict
 
 
 def test_precision_recall_3():
@@ -37,6 +43,8 @@ def test_precision_recall_3():
     data = read_json(data_path)
     mt = Metrics(data, {})
     assert mt.precision == 0.0 and mt.recall == 0.0
+    score_dict = {"precision": 0.0, "recall": 0.0, "f1": 0.0}
+    assert mt.export_dict() == score_dict
 
 
 def test_precision_recall_4():
@@ -54,6 +62,8 @@ def test_precision_recall_4():
     }
     mt = Metrics(data, true_dct)
     assert mt.precision == 0.0 and mt.recall == 0.0
+    score_dict = {"precision": 0.0, "recall": 0.0, "f1": 0.0}
+    assert mt.export_dict() == score_dict
 
 
 def test_precision_recall_7():
@@ -71,6 +81,8 @@ def test_precision_recall_7():
     }
     mt = Metrics(true_dct, data)
     assert mt.precision == 0.0 and mt.recall == 0.0
+    score_dict = {"precision": 0.0, "recall": 0.0, "f1": 0.0}
+    assert mt.export_dict() == score_dict
 
 
 def test_precision_recall_5():
@@ -91,6 +103,9 @@ def test_precision_recall_5():
     }
     mt = Metrics(data, preds)
     assert mt.precision == 8 / 9 and mt.recall == 8 / 9
+    f1 = 2 * (8 / 9) * (8 / 9) / (8 / 9 + 8 / 9)
+    score_dict = {"precision": 8 / 9, "recall": 8 / 9, "f1": f1}
+    assert mt.export_dict() == score_dict
 
 
 def test_precision_recall_6():
@@ -112,6 +127,9 @@ def test_precision_recall_6():
     mt = Metrics(data, preds)
     assert mt.precision == 6 / 7
     assert mt.recall == 6 / 9
+    f1 = 2 * (6 / 7) * (6 / 9) / (6 / 7 + 6 / 9)
+    score_dict = {"precision": 6 / 7, "recall": 6 / 9, "f1": f1}
+    assert mt.export_dict() == score_dict
 
 
 def test_precision_recall_9():
@@ -202,6 +220,9 @@ def test_precision_recall_11():
     mt = Metrics(data, preds)
     assert mt.precision == 5 / 6
     assert mt.recall == 5 / 9
+    f1 = 2 * (5 / 6) * (5 / 9) / (5 / 6 + 5 / 9)
+    score_dict = {"precision": 5 / 6, "recall": 5 / 9, "f1": f1}
+    assert mt.export_dict() == score_dict
 
 
 def test_precision_recall_12():
@@ -223,6 +244,9 @@ def test_precision_recall_12():
     mt = Metrics(data, preds)
     assert mt.precision == 6 / 8
     assert mt.recall == 6 / 9
+    f1 = 2 * (6 / 8) * (6 / 9) / (6 / 8 + 6 / 9)
+    score_dict = {"precision": 6 / 8, "recall": 6 / 9, "f1": f1}
+    assert mt.export_dict() == score_dict
 
 
 def test_precision_recall_13():
@@ -244,6 +268,9 @@ def test_precision_recall_13():
     mt = Metrics(data, preds)
     assert mt.precision == 8 / 10
     assert mt.recall == 8 / 9
+    f1 = 2 * (8 / 10) * (8 / 9) / (8 / 10 + 8 / 9)
+    score_dict = {"precision": 8 / 10, "recall": 8 / 9, "f1": f1}
+    assert mt.export_dict() == score_dict
 
 
 def test_precision_recall_14():
@@ -265,6 +292,9 @@ def test_precision_recall_14():
     mt = Metrics(data, preds)
     assert mt.precision == 8 / 9
     assert mt.recall == 8 / 9
+    f1 = 2 * (8 / 9) * (8 / 9) / (8 / 9 + 8 / 9)
+    score_dict = {"precision": 8 / 9, "recall": 8 / 9, "f1": f1}
+    assert mt.export_dict() == score_dict
 
 
 def test_precision_recall_15():
@@ -286,3 +316,6 @@ def test_precision_recall_15():
     mt = Metrics(data, preds)
     assert mt.precision == 8 / 9
     assert mt.recall == 8 / 9
+    f1 = 2 * (8 / 9) * (8 / 9) / (8 / 9 + 8 / 9)
+    score_dict = {"precision": 8 / 9, "recall": 8 / 9, "f1": f1}
+    assert mt.export_dict() == score_dict
