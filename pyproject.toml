@@ -19,6 +19,7 @@ authors = [
 ]
 dependencies = [
     "tiktoken>=0.4.0",
+    "pymupdf>=1.22.5",
 ]
 requires-python = ">=3.10"
 license = {text = "MIT"}
@@ -46,3 +47,9 @@ check_type = "mypy gptsenpy tests"
 check_lint = "flake8 gptsenpy tests"
 check_format = "black --check gptsenpy tests"
 test = "pytest tests"
+
+[[tool.mypy.overrides]]
+module = [
+  "fitz.*",  # The modules to ignore
+]
+ignore_missing_imports = true

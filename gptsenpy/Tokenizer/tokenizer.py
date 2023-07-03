@@ -46,6 +46,28 @@ class Tokenizer:
         tokens = self._encode(text)
         return len(tokens)
 
+    def divide_text_by_max_token(self, text: str, max_tokens: int = 4000) -> list[str]:
+        """
+        This function divides a given text into smaller chunks based on a maximum number of tokens.
+        The function first tokenizes the input text, then divides the tokens into chunks,
+        each containing no more than `max_tokens` number of tokens.
+        These chunks are then decoded back into text and returned as a list of strings.
+
+        Args:
+            text (str): The input text to be divided.
+            max_tokens (int, optional): The maximum number of tokens for each divided text.
+                                         Defaults to 4000.
+
+        Returns:
+            list[str]: A list of divided texts, each contains no more than `max_tokens` tokens.
+        """
+        tokens = self._encode(text)
+        divided_tokens = []
+        for i in range(0, len(tokens), max_tokens):
+            divided_tokens.append(tokens[i : i + max_tokens])
+        divided_texts = [self._decode(token) for token in divided_tokens]
+        return divided_texts
+
     def _encode(self, text: str) -> list[int]:
         return self.tokenizer.encode(text)
 
