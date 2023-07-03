@@ -19,7 +19,7 @@ class Metrics:
         self.recall: float = self.get_recall()
         self.f1: float = self.get_f1()
 
-    def export_dict(self) -> dict[str, float]:
+    def export_metrics(self) -> dict[str, float]:
         return {
             "precision": self.precision,
             "recall": self.recall,
