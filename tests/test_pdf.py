@@ -1,6 +1,8 @@
 import sys
 from pathlib import Path
 
+import pytest
+
 sys.path.append("../gptsenpy")
 DATA_PATH = Path("tests/data")
 
@@ -70,3 +72,17 @@ def test_divide_sections_2():
     tokenizer = Tokenizer("gpt-3.5-turbo")
     ret = tokenizer.divide_text_by_max_token(sections[0], max_tokens=2000)
     assert len(ret) == 1
+
+
+def test_get_page_text_by_range_1():
+    pdf_path = DATA_PATH / "AA.pdf"
+    pdfloader = PDFLoader(pdf_path)
+    with pytest.raises(AssertionError, match="Invalid page range"):
+        _ = pdfloader.get_page_text_by_range(0, 12)
+    with pytest.raises(AssertionError, match="Invalid page range"):
+        _ = pdfloader.get_page_text_by_range(0, 34)
+
+    _ = pdfloader.get_page_text_by_range(3, 12)
+    _ = pdfloader.get_page_text_by_range(3, 2)
+    _ = pdfloader.get_page_text_by_range(3, 4)
+    _ = pdfloader.get_page_text_by_range(3, 9)
