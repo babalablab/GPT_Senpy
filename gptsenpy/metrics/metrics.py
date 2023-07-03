@@ -19,6 +19,13 @@ class Metrics:
         self.recall: float = self.get_recall()
         self.f1: float = self.get_f1()
 
+    def export_metrics(self) -> dict[str, float]:
+        return {
+            "precision": self.precision,
+            "recall": self.recall,
+            "f1": self.f1,
+        }
+
     def get_recall(
         self,
         labels: Optional[dict[str, bool | set[Num]]] = None,
