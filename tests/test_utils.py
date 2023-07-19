@@ -27,7 +27,7 @@ def test_clean_values_2():
     assert type(data) == dict
     true_dct = {
         "optim-optimizer-MomentumSGD": True,
-        "optim-optimizer-MomentumSGD-momentum": {0.9},
+        "optim-optimizer-momentum": {0.9},
         "optim-learningrate": {0.4},
         "optim-weightdecay": {0.0005},
         "optim-lrscheduler-CosineAnnealingLR": True,
@@ -48,11 +48,11 @@ def test_clean_values_3():
     key_lst = [
         "optim-optimizer-Adam",
         "optim-optimizer-MomentumSGD",
-        "optim-optimizer-MomentumSGD-momentum",
+        "optim-optimizer-momentum",
     ]
     true_dct = {
         "optim-optimizer-MomentumSGD": True,
-        "optim-optimizer-MomentumSGD-momentum": {0.9},
+        "optim-optimizer-momentum": {0.9},
     }
     assert clean_values(data, key_lst) == true_dct
 
