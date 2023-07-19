@@ -3,7 +3,7 @@
   "optim-optimizer-AdamW": null,
   "optim-optimizer-SGD": null,
   "optim-optimizer-MomentumSGD": null,
-  "optim-optimizer-MomentumSGD-momentum": null,
+  "optim-optimizer-momentum": null,
   "optim-learningrate": null,
   "optim-weightdecay": null,
   "optim-lrscheduler-LambdaLR": null,

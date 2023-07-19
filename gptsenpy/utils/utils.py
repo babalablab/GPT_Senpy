@@ -17,7 +17,7 @@ DEFAULT_KEY = [
     "optim-optimizer-Rprop",
     "optim-optimizer-SGD",
     "optim-optimizer-MomentumSGD",
-    "optim-optimizer-MomentumSGD-momentum",
+    "optim-optimizer-momentum",
     "optim-learningrate",
     "optim-weightdecay",
     "optim-lrscheduler-LambdaLR",

@@ -52,7 +52,7 @@ def test_precision_recall_4():
     data = read_json(data_path)
     true_dct = {
         "optim-optimizer-MomentumSGD": True,
-        "optim-optimizer-MomentumSGD-momentum": 0.9,
+        "optim-optimizer-momentum": 0.9,
         "optim-learningrate": 0.4,
         "optim-weightdecay": 0.0001,
         "optim-lrscheduler-LambdaLR": True,
@@ -71,7 +71,7 @@ def test_precision_recall_7():
     data = read_json(data_path)
     true_dct = {
         "optim-optimizer-MomentumSGD": True,
-        "optim-optimizer-MomentumSGD-momentum": 0.9,
+        "optim-optimizer-momentum": 0.9,
         "optim-learningrate": 0.4,
         "optim-weightdecay": 0.0001,
         "optim-lrscheduler-LambdaLR": True,
@@ -92,7 +92,7 @@ def test_precision_recall_5():
     data = read_json(data_path)
     preds = {
         "optim-optimizer-MomentumSGD": True,
-        "optim-optimizer-MomentumSGD-momentum": 0.9,
+        "optim-optimizer-momentum": 0.9,
         "optim-learningrate": 0.4,
         "optim-weightdecay": 0.0005,
         "optim-lrscheduler-CosineAnnealingLR": True,
@@ -115,7 +115,7 @@ def test_precision_recall_6():
     data = read_json(data_path)
     preds = {
         # "optim-optimizer-MomentumSGD": True,
-        # "optim-optimizer-MomentumSGD-momentum": 0.9,
+        # "optim-optimizer-momentum": 0.9,
         "optim-learningrate": 0.4,
         "optim-weightdecay": 0.0005,
         "optim-lrscheduler-CosineAnnealingLR": True,
@@ -139,7 +139,7 @@ def test_precision_recall_9():
     data = read_json(data_path)
     preds = {
         # "optim-optimizer-MomentumSGD": True,
-        # "optim-optimizer-MomentumSGD-momentum": 0.9,
+        # "optim-optimizer-momentum": 0.9,
         "optim-learningrate": 0.4,
         "optim-weightdecay": 0.0005,
         "optim-lrscheduler-CosineAnnealingLR": True,
@@ -162,7 +162,7 @@ def test_precision_recall_8():
     data = read_json(data_path)
     preds = {
         # "optim-optimizer-MomentumSGD": True,
-        # "optim-optimizer-MomentumSGD-momentum": 0.9,
+        # "optim-optimizer-momentum": 0.9,
         "optim-learningrate": 0.4,
         "optim-weightdecay": 0.0005,
         "optim-lrscheduler-CosineAnnealingLR": True,
@@ -185,7 +185,7 @@ def test_precision_recall_10():
     data = read_json(data_path)
     preds = {
         # "optim-optimizer-MomentumSGD": True,
-        # "optim-optimizer-MomentumSGD-momentum": 0.9,
+        # "optim-optimizer-momentum": 0.9,
         "optim-learningrate": 0.4,
         "optim-weightdecay": 0.0005,
         "optim-lrscheduler-CosineAnnealingLR": True,
@@ -208,7 +208,7 @@ def test_precision_recall_11():
     data = read_json(data_path)
     preds = {
         # "optim-optimizer-MomentumSGD": True,
-        # "optim-optimizer-MomentumSGD-momentum": 0.9,
+        # "optim-optimizer-momentum": 0.9,
         "optim-learningrate": 0.4,
         "optim-weightdecay": 0.0005,
         "optim-lrscheduler-CosineAnnealingLR": False,
@@ -232,7 +232,7 @@ def test_precision_recall_12():
     data = read_json(data_path)
     preds = {
         # "optim-optimizer-MomentumSGD": True,
-        # "optim-optimizer-MomentumSGD-momentum": 0.9,
+        # "optim-optimizer-momentum": 0.9,
         "optim-learningrate": [0.4, 0.7],
         "optim-weightdecay": 0.0005,
         "optim-lrscheduler-CosineAnnealingLR": True,
@@ -256,7 +256,7 @@ def test_precision_recall_13():
     data = read_json(data_path)
     preds = {
         "optim-optimizer-MomentumSGD": True,
-        "optim-optimizer-MomentumSGD-momentum": [0.9, 0.9],
+        "optim-optimizer-momentum": [0.9, 0.9],
         "optim-learningrate": [0.4, 0.9],
         "optim-weightdecay": 0.0005,
         "optim-lrscheduler-CosineAnnealingLR": True,
@@ -280,7 +280,7 @@ def test_precision_recall_14():
     data = read_json(data_path)
     preds = {
         "optim-optimizer-MomentumSGD": True,
-        "optim-optimizer-MomentumSGD-momentum": [0.9, 0.9],
+        "optim-optimizer-momentum": [0.9, 0.9],
         "optim-learningrate": [4e-01],
         "optim-weightdecay": 0.0005,
         "optim-lrscheduler-CosineAnnealingLR": True,
@@ -304,7 +304,7 @@ def test_precision_recall_15():
     data = read_json(data_path)
     preds = {
         "optim-optimizer-MomentumSGD": True,
-        "optim-optimizer-MomentumSGD-momentum": [9000e-4, 0.9],
+        "optim-optimizer-momentum": [9000e-4, 0.9],
         "optim-learningrate": [4e-01],
         "optim-weightdecay": 0.0005,
         "optim-lrscheduler-CosineAnnealingLR": True,
