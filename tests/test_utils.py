@@ -97,7 +97,14 @@ def test_concat_json_0():
         "optim-weightdecay": {5e-5},
         "iterations": {5510},
     }
+    expected_majority_vote = {
+        "epochs": {1},
+        "optim-optimizer-Adam": True,
+        "optim-weightdecay": {5e-5},
+        "iterations": {5510},
+    }
     assert concat_json_result([dct1, dct2, dct3]) == expected
+    assert concat_json_result([dct1, dct2, dct3], majority_vote=True) == expected_majority_vote
 
 
 def test_concat_json_1():
@@ -126,7 +133,15 @@ def test_concat_json_1():
         "optim-weightdecay": {5e-5},
         "iterations": {5510},
     }
+    expected_majority_vote = {
+        "epochs": {1},
+        "optim-optimizer-Adam": True,
+        "optim-weightdecay": {5e-5},
+        "iterations": {5510},
+    }
+
     assert concat_json_result([dct1, dct2, dct3]) == expected
+    assert concat_json_result([dct1, dct2, dct3], majority_vote=True) == expected_majority_vote
 
 
 def test_concat_json_2():
@@ -163,4 +178,50 @@ def test_concat_json_2():
         "iterations": {5510},
         "FPS": {100000},
     }
+    expected_majority_vote = {
+        "epochs": {1},
+        "optim-optimizer-Adam": True,
+        "optim-weightdecay": {5e-5},
+        "iterations": {5510},
+        "FPS": {100000},
+    }
     assert concat_json_result([dct1, dct2, dct3, dct4]) == expected
+    assert concat_json_result([dct1, dct2, dct3, dct4], majority_vote=True) == expected_majority_vote
+
+
+def test_concat_json_3():
+    dct1 = {
+        "epochs": 0,
+        "optim-optimizer-Adam": True,
+        "optim-lrscheduler-CosineAnnealingLR": False,
+        "optim-weightdecay": 5e-5,
+    }
+    dct2 = {
+        "epochs": 0,
+        "optim-optimizer-Adam": False,
+        "optim-lrscheduler-CosineAnnealingLR": False,
+        "optim-weightdecay": 5e-5,
+    }
+    dct3 = {
+        "epochs": 1,
+        "optim-weightdecay": 4e-5,
+        "iterations": 5510,
+    }
+    dct4 = {
+        "epochs": 1,
+        "iterations": 100,
+    }
+    expected = {
+        "epochs": {0, 1},
+        "optim-optimizer-Adam": True,
+        "optim-weightdecay": {5e-5, 4e-5},
+        "iterations": {5510, 100},
+    }
+    expected_majority_vote = {
+        "epochs": {0, 1},
+        "optim-optimizer-Adam": True,
+        "optim-weightdecay": {5e-5},
+        "iterations": {5510, 100},
+    }
+    assert concat_json_result([dct1, dct2, dct3, dct4]) == expected
+    assert concat_json_result([dct1, dct2, dct3, dct4], majority_vote=True) == expected_majority_vote

@@ -1,3 +1,4 @@
+from collections import Counter
 from typing import Any, Optional, TypeAlias
 
 
@@ -142,7 +143,8 @@ def get_denominator(values: dict[str, bool | set[Num]]) -> int:
     return ret
 
 
-def concat_json_result(results: list[dict[str, Any]]) -> dict[str, set[Num] | bool]:
+def concat_json_result(results: list[dict[str, Any]],
+                       majority_vote: bool = False) -> dict[str, set[Num] | bool]:
     """
     Merges a list of dictionaries into a single dictionary.
 
@@ -159,25 +161,31 @@ def concat_json_result(results: list[dict[str, Any]]) -> dict[str, set[Num] | bo
     Args:
         results: A list of dictionaries. The dictionaries should contain keys of type str and
                  values of type set of numbers (Num) or bool.
+        majority_vote: A flag to apply a majority vote.
 
     Returns:
         A merged dictionary with keys of type str and values of type set of numbers (Num) or bool.
-
-    Raises:
-        TypeError: If a value in the dictionary is not a boolean or a set.
     """
     merged_dict = {}
     for result in results:
         cleaned_result = clean_values(result)
 
         for k, v in cleaned_result.items():
+            assert type(v) in (bool, set)
             if k not in merged_dict:
-                merged_dict[k] = v
+                merged_dict[k] = v if type(v) == bool else list(v)
             elif isinstance(v, bool):
                 merged_dict[k] = merged_dict[k] or v
             elif isinstance(v, set):
-                merged_dict[k] = merged_dict[k] | v  # type: ignore
-            else:
-                raise TypeError("Unexpected type in result")
-        merged_dict = clean_values(merged_dict)  # type: ignore
+                merged_dict[k] += list(v)
+    if majority_vote:
+        for key, value in merged_dict.items():
+            if type(value) == bool:
+                continue
+            cnt = Counter(value)
+            max_cnt = max(cnt.values())
+            majorities = [k for k, v in cnt.items() if v == max_cnt]
+            merged_dict[key] = set(majorities)
+    else:
+        merged_dict = clean_values(merged_dict)
     return merged_dict
