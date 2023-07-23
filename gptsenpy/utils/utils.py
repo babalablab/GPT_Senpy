@@ -143,8 +143,9 @@ def get_denominator(values: dict[str, bool | set[Num]]) -> int:
     return ret
 
 
-def concat_json_result(results: list[dict[str, Any]],
-                       majority_vote: bool = False) -> dict[str, set[Num] | bool]:
+def concat_json_result(
+    results: list[dict[str, Any]], majority_vote: bool = False
+) -> dict[str, set[Num] | bool]:
     """
     Merges a list of dictionaries into a single dictionary.
 
@@ -177,15 +178,15 @@ def concat_json_result(results: list[dict[str, Any]],
             elif isinstance(v, bool):
                 merged_dict[k] = merged_dict[k] or v
             elif isinstance(v, set):
-                merged_dict[k] += list(v)
+                merged_dict[k] += list(v)  # type: ignore
     if majority_vote:
         for key, value in merged_dict.items():
             if type(value) == bool:
                 continue
-            cnt = Counter(value)
+            cnt = Counter(value)  # type: ignore
             max_cnt = max(cnt.values())
             majorities = [k for k, v in cnt.items() if v == max_cnt]
             merged_dict[key] = set(majorities)
     else:
-        merged_dict = clean_values(merged_dict)
-    return merged_dict
+        merged_dict = clean_values(merged_dict)  # type: ignore
+    return merged_dict  # type: ignore
