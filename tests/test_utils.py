@@ -105,7 +105,7 @@ def test_concat_json_0():
     }
     assert concat_json_result([dct1, dct2, dct3]) == expected
     assert (
-        concat_json_result([dct1, dct2, dct3], majority_vote=True)
+        concat_json_result([dct1, dct2, dct3], vote_option="majority_vote")
         == expected_majority_vote
     )
 
@@ -145,7 +145,7 @@ def test_concat_json_1():
 
     assert concat_json_result([dct1, dct2, dct3]) == expected
     assert (
-        concat_json_result([dct1, dct2, dct3], majority_vote=True)
+        concat_json_result([dct1, dct2, dct3], vote_option="majority_vote")
         == expected_majority_vote
     )
 
@@ -193,7 +193,7 @@ def test_concat_json_2():
     }
     assert concat_json_result([dct1, dct2, dct3, dct4]) == expected
     assert (
-        concat_json_result([dct1, dct2, dct3, dct4], majority_vote=True)
+        concat_json_result([dct1, dct2, dct3, dct4], vote_option="majority_vote")
         == expected_majority_vote
     )
 
@@ -234,6 +234,6 @@ def test_concat_json_3():
     }
     assert concat_json_result([dct1, dct2, dct3, dct4]) == expected
     assert (
-        concat_json_result([dct1, dct2, dct3, dct4], majority_vote=True)
+        concat_json_result([dct1, dct2, dct3, dct4], vote_option="majority_vote")
         == expected_majority_vote
     )
