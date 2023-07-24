@@ -173,10 +173,8 @@ def concat_json_result(
 
         for k, v in cleaned_result.items():
             assert isinstance(v, bool | set)
-            if k not in union_dict:
-                union_dict[k] = [v] if isinstance(v, bool) else list(v)
-            else:
-                union_dict[k] += [v] if isinstance(v, bool) else list(v)
+            union_dict.setdefault(k, [])
+            union_dict[k] += [v] if isinstance(v, bool) else list(v)
 
     merged_dict: dict[str, bool | set[Num]] = {}
     match vote_option:
