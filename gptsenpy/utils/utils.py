@@ -1,7 +1,8 @@
+from collections import Counter
 from typing import Any, Optional, TypeAlias
 
 
-Num: TypeAlias = int | float
+Num: TypeAlias = int | float | bool
 DEFAULT_KEY = [
     "optim-optimizer-Adadelta",
     "optim-optimizer-Adagrad",
@@ -70,7 +71,7 @@ DEFAULT_KEY = [
 
 
 def clean_values(
-    values: dict[str, bool | list[Num] | set[Num]],
+    values: dict[str, bool | list[Num] | set[Num]] | dict[str, list[Num]],
     key_lst: Optional[list[str]] = None,
 ) -> dict[str, bool | set[Num]]:
     """
@@ -142,7 +143,9 @@ def get_denominator(values: dict[str, bool | set[Num]]) -> int:
     return ret
 
 
-def concat_json_result(results: list[dict[str, Any]]) -> dict[str, set[Num] | bool]:
+def concat_json_result(
+    results: list[dict[str, Any]], vote_option: str = "union"
+) -> dict[str, set[Num] | bool]:
     """
     Merges a list of dictionaries into a single dictionary.
 
@@ -159,25 +162,40 @@ def concat_json_result(results: list[dict[str, Any]]) -> dict[str, set[Num] | bo
     Args:
         results: A list of dictionaries. The dictionaries should contain keys of type str and
                  values of type set of numbers (Num) or bool.
+        vote_option: Voting option. Supported values are 'union' and 'majority_vote'.
 
     Returns:
         A merged dictionary with keys of type str and values of type set of numbers (Num) or bool.
-
-    Raises:
-        TypeError: If a value in the dictionary is not a boolean or a set.
     """
-    merged_dict = {}
+    union_dict: dict[str, list[Num]] = {}
     for result in results:
         cleaned_result = clean_values(result)
 
         for k, v in cleaned_result.items():
-            if k not in merged_dict:
-                merged_dict[k] = v
-            elif isinstance(v, bool):
-                merged_dict[k] = merged_dict[k] or v
-            elif isinstance(v, set):
-                merged_dict[k] = merged_dict[k] | v  # type: ignore
-            else:
-                raise TypeError("Unexpected type in result")
-        merged_dict = clean_values(merged_dict)  # type: ignore
+            assert isinstance(v, bool | set)
+            union_dict.setdefault(k, [])
+            union_dict[k] += [v] if isinstance(v, bool) else list(v)
+
+    merged_dict: dict[str, bool | set[Num]] = {}
+    match vote_option:
+        case "union":
+            merged_dict = clean_values(union_dict)
+        case "majority_vote":
+            for key, value in union_dict.items():
+                cnt = Counter(value)
+                max_cnt = max(cnt.values())
+                majorities = [k for k, v in cnt.items() if v == max_cnt]
+                merged_dict[key] = set(majorities)
+        case _:
+            raise ValueError(
+                f"'vote_option' must be a supported voting method, got '{vote_option}.'"
+            )
+    for mkey, mvalue in merged_dict.items():  # TODO: Remove me
+        if isinstance(mvalue, bool):
+            continue
+        for vv in mvalue:
+            if vv is True:
+                merged_dict[mkey] = True
+                break
+
     return merged_dict
