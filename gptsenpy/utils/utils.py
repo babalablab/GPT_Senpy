@@ -117,12 +117,13 @@ def clean_values(
     return ret_dict
 
 
-def get_denominator(values: dict[str, bool | set[Num]]) -> int:
+def get_denominator(values: dict[str, bool | set[Num] | list[Num]]) -> int:
     """
     Calculates the denominator for a fraction based on the given dictionary of values.
 
     Args:
-        values (dict[str, bool | set[Num]]): A dictionary of values where the keys are strings and the values are either boolean or sets of numbers.
+        values (dict[str, bool | set[Num] | list[Num]]): A dictionary of values where the keys are strings and the values take either bool, set of numerical values, or list of numerical values.
+
 
     Returns:
         int: The denominator for the fraction, which is the sum of the number of values in each set and the number of boolean values.
@@ -132,11 +133,11 @@ def get_denominator(values: dict[str, bool | set[Num]]) -> int:
 
     Example:
         >>> get_denominator({'a': True, 'b': False, 'c': {'d', 'e', 'f'}})
-        4
+        5
     """
     ret = 0
     for v in values.values():
-        if isinstance(v, set):
+        if isinstance(v, set | list):
             ret += len(v)
         else:
             ret += 1
