@@ -2,7 +2,17 @@ import sys
 
 sys.path.append("../gptsenpy")
 from gptsenpy.io.read import read_json
-from gptsenpy.utils import clean_values, concat_json_result
+from gptsenpy.utils import clean_values, concat_json_result, get_denominator
+
+
+def test_get_denominator_0():
+    dct = {}
+    assert get_denominator(dct) == 0
+
+
+def test_get_denominator_1():
+    dct = {"a": True, "b": False, "c": {"d", "e", "f"}}
+    assert get_denominator(dct) == 5
 
 
 def test_clean_values_null():
