@@ -15,7 +15,7 @@ def test_get_denominator_1():
     assert get_denominator(dct) == 5
 
 
-def test_get_denominator_1():
+def test_get_denominator_2():
     dct = {"a": True, "b": {1, 2, 3}, "c": [4, 5]}
     assert get_denominator(dct) == 6
 

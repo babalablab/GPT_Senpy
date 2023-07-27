@@ -117,7 +117,11 @@ def clean_values(
     return ret_dict
 
 
-def get_denominator(values: dict[str, bool | set[Num] | list[Num]]) -> int:
+def get_denominator(
+    values: dict[str, bool | set[Num]]
+    | dict[str, bool | list[Num]]
+    | dict[str, bool | set[Num] | list[Num]]
+) -> int:
     """
     Calculates the denominator for a fraction based on the given dictionary of values.
 
