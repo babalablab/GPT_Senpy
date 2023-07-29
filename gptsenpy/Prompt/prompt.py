@@ -33,7 +33,8 @@ class PromptTemplate:
         Example:
             >>> replacer = {'name': 'John', 'age': '30'}
             >>> template = 'Hello, my name is ${name} and I am ${age} years old.'
-            >>> build_prompt(template, replacer)
+            >>> prompt_template = PromptTemplate(template)
+            >>> prompt_template.build_prompt(replacer)
             'Hello, my name is John and I am 30 years old.'
         """
 
