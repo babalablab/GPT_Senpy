@@ -132,7 +132,7 @@ def get_denominator(values: dict[str, bool | set[Num]]) -> int:
 
     Example:
         >>> get_denominator({'a': True, 'b': False, 'c': {'d', 'e', 'f'}})
-        4
+        5
     """
     ret = 0
     for v in values.values():

@@ -1,4 +1,3 @@
-import sys
 from typing import Optional, TypeAlias
 
 from ..utils import clean_values, get_denominator
@@ -14,6 +13,8 @@ class Metrics:
     ):
         self.labels = clean_values(labels)
         self.preds = clean_values(preds)
+        self.num_labels: int = self.__get_num_values(self.labels)
+        self.num_preds: int = self.__get_num_values(self.preds)
 
         self.precision: float = self.get_precision()
         self.recall: float = self.get_recall()
@@ -25,6 +26,9 @@ class Metrics:
             "recall": self.recall,
             "f1": self.f1,
         }
+
+    def __get_num_values(self, dct: dict[str, bool | set[Num]]) -> int:
+        return get_denominator(dct)
 
     def get_recall(
         self,
