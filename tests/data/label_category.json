@@ -1,0 +1,101 @@
+{
+    "optim-optimizer": [
+        "optim-optimizer-Adadelta",
+        "optim-optimizer-Adagrad",
+        "optim-optimizer-Adam",
+        "optim-optimizer-AdamW",
+        "optim-optimizer-SparseAdam",
+        "optim-optimizer-Adamax",
+        "optim-optimizer-ASGD",
+        "optim-optimizer-LBFGS",
+        "optim-optimizer-NAdam",
+        "optim-optimizer-RAdam",
+        "optim-optimizer-RMSprop",
+        "optim-optimizer-Rprop",
+        "optim-optimizer-SGD",
+        "optim-optimizer-MomentumSGD"
+    ],
+    "optim-optimizer-momentum": [
+        "optim-optimizer-momentum"
+    ],
+    "optim-learningrate": [
+        "optim-learningrate"
+    ],
+    "optim-weightdecay": [
+        "optim-weightdecay"
+    ],
+    "optim-lrscheduler": [
+        "optim-lrscheduler-LambdaLR",
+        "optim-lrscheduler-MultiplicativeLR",
+        "optim-lrscheduler-StepLR",
+        "optim-lrscheduler-MultiStepLR",
+        "optim-lrscheduler-ConstantLR",
+        "optim-lrscheduler-LinearLR",
+        "optim-lrscheduler-ExponentialLR",
+        "optim-lrscheduler-PolynomialLR",
+        "optim-lrscheduler-CosineAnnealingLR",
+        "optim-lrscheduler-ChainedScheduler",
+        "optim-lrscheduler-SequentialLR",
+        "optim-lrscheduler-ReduceLROnPlateau",
+        "optim-lrscheduler-CyclicLR",
+        "optim-lrscheduler-OneCycleLR",
+        "optim-lrscheduler-CosineAnnealingWarmRestarts"
+    ],
+    "optim-earlystopping": [
+        "optim-earlystopping"
+    ],
+    "batchsize": [
+        "batchsize"
+    ],
+    "iterations": [
+        "iterations"
+    ],
+    "epochs": [
+        "epochs"
+    ],
+    "FPS": [
+        "FPS"
+    ],
+    "runtime-train": [
+        "runtime-train"
+    ],
+    "runtime-inference": [
+        "runtime-inference"
+    ],
+    "resource-train-gpu": [
+        "resource-train-gpu-V100",
+        "resource-train-gpu-T4",
+        "resource-train-gpu-P100",
+        "resource-train-gpu-A100",
+        "resource-train-gpu-M40",
+        "resource-train-tpu-v3",
+        "resource-train-tpu-v4",
+        "resource-train-gpu-GTX1660Ti",
+        "resource-train-gpu-RTX2070",
+        "resource-train-gpu-RTX3080"
+    ],
+    "resource-train-gpu-num": [
+        "resource-train-gpu-num"
+    ],
+    "resource-train-gpu-memory": [
+        "resource-train-gpu-memory"
+    ],
+    "resource-inference-gpu": [
+        "resource-inference-gpu-V100",
+        "resource-inference-gpu-T4",
+        "resource-inference-gpu-P100",
+        "resource-inference-gpu-A100",
+        "resource-inference-gpu-M40",
+        "resource-inference-tpu-v3",
+        "resource-inference-tpu-v4",
+        "resource-inference-gpu-GTX1660Ti",
+        "resource-inference-gpu-RTX2070",
+        "resource-inference-gpu-RTX3080"
+    ],
+    "resource-inference-gpu-num": [
+        "resource-inference-gpu-num"
+    ],
+    "resource-inference-gpu-memory": [
+        "resource-inference-gpu-memory"
+    ]
+}
