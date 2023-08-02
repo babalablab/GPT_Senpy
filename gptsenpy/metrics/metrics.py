@@ -12,29 +12,49 @@ class MetricGroup:
         self.preds = preds
         self.label_category = label_category
 
-        self.recall_lst = []
-        self.precision_lst = []
-        self.num_labels_lst = []
-        self.num_preds_lst = []
+        self.recall_dct = {}
+        self.precision_dct = {}
+        self.f1_dct = {}
+        self.num_labels_dct = {}
+        self.num_preds_dct = {}
 
         for c in label_category:
             label = labels[c] if c in labels else set()
             pred = preds[c] if c in preds else set()
             mt = Metrics(label, pred)
-            self.recall_lst.append(mt.recall)
-            self.precision_lst.append(mt.precision)
-            self.num_labels_lst.append(mt.num_labels)
-            self.num_preds_lst.append(mt.num_preds)
+            self.recall_dct[c] = mt.recall
+            self.precision_dct[c] = mt.precision
+            self.f1_dct[c] = mt.f1
+            self.num_labels_dct[c] = mt.num_labels
+            self.num_preds_dct[c] = mt.num_preds
 
-        self.recall = sum(self.recall_lst) / len(self.recall_lst)
-        self.precision = sum(self.precision_lst) / len(self.precision_lst)
-        self.num_labels = sum(self.num_labels_lst)
-        self.num_preds = sum(self.num_preds_lst)
+        self.recall = (
+            sum(self.recall_dct.values()) / len(self.recall_dct.values())
+            if self.recall_dct.values()
+            else 0.0
+        )
+        self.precision = (
+            sum(self.precision_dct.values()) / len(self.precision_dct.values())
+            if self.precision_dct.values()
+            else 0.0
+        )
+        self.f1 = (
+            sum(self.f1_dct.values()) / len(self.f1_dct.values())
+            if self.f1_dct.values()
+            else 0.0
+        )
+        self.num_labels = (
+            sum(self.num_labels_dct.values()) if self.num_labels_dct.values() else 0.0
+        )
+        self.num_preds = (
+            sum(self.num_preds_dct.values()) if self.num_preds_dct.values() else 0.0
+        )
 
     def export_metrics(self) -> dict[str, float]:
         return {
             "recall": self.recall,
             "precision": self.precision,
+            "f1": self.f1,
             "num_labels": self.num_labels,
             "num_preds": self.num_preds,
         }
