@@ -1,18 +1,55 @@
 from ..utils import Num
 
 
+class MetricGroup:
+    def __init__(
+        self,
+        labels: dict[str, set[str | Num]],
+        preds: dict[str, set[str | Num]],
+        label_category: dict[str, list[str]],
+    ):
+        self.labels = labels
+        self.preds = preds
+        self.label_category = label_category
+
+        self.recall_lst = []
+        self.precision_lst = []
+        self.num_labels_lst = []
+        self.num_preds_lst = []
+
+        for c in label_category:
+            label = labels[c] if c in labels else set()
+            pred = preds[c] if c in preds else set()
+            mt = Metrics(label, pred)
+            self.recall_lst.append(mt.recall)
+            self.precision_lst.append(mt.precision)
+            self.num_labels_lst.append(mt.num_labels)
+            self.num_preds_lst.append(mt.num_preds)
+
+        self.recall = sum(self.recall_lst) / len(self.recall_lst)
+        self.precision = sum(self.precision_lst) / len(self.precision_lst)
+        self.num_labels = sum(self.num_labels_lst)
+        self.num_preds = sum(self.num_preds_lst)
+
+    def export_metrics(self) -> dict[str, float]:
+        return {
+            "recall": self.recall,
+            "precision": self.precision,
+            "num_labels": self.num_labels,
+            "num_preds": self.num_preds,
+        }
+
+
 class Metrics:
     def __init__(
         self,
         labels: set[str | Num],
         preds: set[str | Num],
     ):
-        assert isinstance(labels, set)
-        assert isinstance(preds, set)
-        for i in labels:
-            assert isinstance(i, str | Num)
-        for i in preds:
-            assert isinstance(i, str | Num)
+        assert isinstance(labels, set) and all(
+            [isinstance(i, str | Num) for i in labels]
+        )
+        assert isinstance(preds, set) and all([isinstance(i, str | Num) for i in preds])
 
         self.labels = labels
         self.preds = preds
@@ -23,13 +60,6 @@ class Metrics:
         self.recall: float = self.__get_recall()
         self.precision: float = self.__get_precision()
         self.f1: float = self.__get_f1()
-
-    def export_metrics(self) -> dict[str, float]:
-        return {
-            "recall": self.recall,
-            "precision": self.precision,
-            "f1": self.f1,
-        }
 
     def __get_recall(
         self,
