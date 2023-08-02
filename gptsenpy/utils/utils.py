@@ -107,7 +107,7 @@ def clean_values(
         if isinstance(v, int | float | bool):
             ret_dct[k] = v
         else:
-            raise ValueError(f"Value must be a bool, int, or float")
+            raise ValueError("Value must be a bool, int, or float")
 
     return ret_dct
 
