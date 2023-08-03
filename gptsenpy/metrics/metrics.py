@@ -1,98 +1,124 @@
-from typing import Optional, TypeAlias
+from ..utils import Num
 
-from ..utils import clean_values, get_denominator
 
-Num: TypeAlias = int | float
+class MetricGroup:
+    def __init__(
+        self,
+        labels: dict[str, set[str | Num]],
+        preds: dict[str, set[str | Num]],
+        label_category: dict[str, list[str]],
+    ):
+        self.labels = labels
+        self.preds = preds
+        self.label_category = label_category
+
+        self.recall_dct = {}
+        self.precision_dct = {}
+        self.f1_dct = {}
+        self.num_labels_dct = {}
+        self.num_preds_dct = {}
+
+        for c in label_category:
+            label = labels[c] if c in labels else set()
+            pred = preds[c] if c in preds else set()
+            mt = Metrics(label, pred)
+            self.recall_dct[c] = mt.recall
+            self.precision_dct[c] = mt.precision
+            self.f1_dct[c] = mt.f1
+            self.num_labels_dct[c] = mt.num_labels
+            self.num_preds_dct[c] = mt.num_preds
+
+        self.recall = (
+            sum(self.recall_dct.values()) / len(self.recall_dct.values())
+            if self.recall_dct.values()
+            else 0.0
+        )
+        self.precision = (
+            sum(self.precision_dct.values()) / len(self.precision_dct.values())
+            if self.precision_dct.values()
+            else 0.0
+        )
+        self.f1 = (
+            sum(self.f1_dct.values()) / len(self.f1_dct.values())
+            if self.f1_dct.values()
+            else 0.0
+        )
+        self.num_labels = (
+            sum(self.num_labels_dct.values()) if self.num_labels_dct.values() else 0
+        )
+        self.num_preds = (
+            sum(self.num_preds_dct.values()) if self.num_preds_dct.values() else 0
+        )
+
+    def export_metrics(self) -> dict[str, int | float]:
+        return {
+            "recall": self.recall,
+            "precision": self.precision,
+            "f1": self.f1,
+            "num_labels": self.num_labels,
+            "num_preds": self.num_preds,
+        }
 
 
 class Metrics:
     def __init__(
         self,
-        labels: dict[str, bool | set[Num] | list[Num]],
-        preds: dict[str, bool | set[Num] | list[Num]],
+        labels: set[str | Num],
+        preds: set[str | Num],
     ):
-        self.labels = clean_values(labels)
-        self.preds = clean_values(preds)
-        self.num_labels: int = self.__get_num_values(self.labels)
-        self.num_preds: int = self.__get_num_values(self.preds)
+        assert isinstance(labels, set) and all(
+            [isinstance(i, str | Num) for i in labels]
+        )
+        assert isinstance(preds, set) and all([isinstance(i, str | Num) for i in preds])
 
-        self.precision: float = self.get_precision()
-        self.recall: float = self.get_recall()
-        self.f1: float = self.get_f1()
+        self.labels = labels
+        self.preds = preds
 
-    def export_metrics(self) -> dict[str, float]:
-        return {
-            "precision": self.precision,
-            "recall": self.recall,
-            "f1": self.f1,
-        }
+        self.num_labels: int = len(labels)
+        self.num_preds: int = len(preds)
 
-    def __get_num_values(self, dct: dict[str, bool | set[Num]]) -> int:
-        return get_denominator(dct)
+        self.recall: float = self.__get_recall()
+        self.precision: float = self.__get_precision()
+        self.f1: float = self.__get_f1()
 
-    def get_recall(
+    def __get_recall(
         self,
-        labels: Optional[dict[str, bool | set[Num]]] = None,
-        preds: Optional[dict[str, bool | set[Num]]] = None,
+        labels: set[str | Num] | None = None,
+        preds: set[str | Num] | None = None,
     ) -> float:
-        labels = self.get_value_if_none(labels, "labels")
-        preds = self.get_value_if_none(preds, "preds")
+        labels = self.__get_value_if_none(labels, "labels")
+        preds = self.__get_value_if_none(preds, "preds")
+
         if len(labels) == 0:
             return 0.0
 
-        denominator = get_denominator(labels)
-        numerator = 0
-        for k, v in labels.items():
-            if k not in preds.keys():
-                continue
-            if isinstance(v, set):
-                for vv in v:
-                    preds_k = preds[k]
-                    if isinstance(preds_k, set) and vv in preds_k:
-                        numerator += 1
-                        break
-            else:
-                if preds[k] == v:
-                    numerator += 1
-
+        denominator = len(labels)
+        numerator = sum([i in preds for i in labels])
         return numerator / denominator
 
-    def get_precision(
+    def __get_precision(
         self,
-        labels: Optional[dict[str, bool | set[Num]]] = None,
-        preds: Optional[dict[str, bool | set[Num]]] = None,
+        labels: set[str | Num] | None = None,
+        preds: set[str | Num] | None = None,
     ) -> float:
-        labels = self.get_value_if_none(labels, "labels")
-        preds = self.get_value_if_none(preds, "preds")
+        labels = self.__get_value_if_none(labels, "labels")
+        preds = self.__get_value_if_none(preds, "preds")
 
         if len(preds) == 0:
             return 0.0
-        numerator = 0
-        denominator = get_denominator(preds)
-        for k, v in preds.items():
-            if k not in labels.keys():
-                continue
 
-            if isinstance(v, set):
-                for vv in v:
-                    labels_k = labels[k]
-                    if isinstance(labels_k, set) and vv in labels_k:
-                        numerator += 1
-                        break
-            else:
-                if labels[k] == v:
-                    numerator += 1
-
+        denominator = len(preds)
+        numerator = sum([i in labels for i in preds])
         return numerator / denominator
 
-    def get_f1(
+    def __get_f1(
         self,
-        labels: Optional[dict[str, bool | set[Num]]] = None,
-        preds: Optional[dict[str, bool | set[Num]]] = None,
+        labels: set[str | Num] | None = None,
+        preds: set[str | Num] | None = None,
     ) -> float:
-        labels = self.get_value_if_none(labels, "labels")
-        preds = self.get_value_if_none(preds, "preds")
-        recall, precision = self.get_recall(labels, preds), self.get_precision(
+        labels = self.__get_value_if_none(labels, "labels")
+        preds = self.__get_value_if_none(preds, "preds")
+        recall, precision = self.__get_recall(labels, preds), self.__get_precision(
             labels, preds
         )
 
@@ -100,12 +126,12 @@ class Metrics:
             return 0
         return 2 * recall * precision / (recall + precision)
 
-    def get_value_if_none(
-        self, values: Optional[dict] = None, name: Optional[str] = None
-    ) -> dict[str, bool | set[Num]]:
+    def __get_value_if_none(
+        self, values: set | None = None, name: str | None = None
+    ) -> set[str | Num]:
         if values is None and name is not None:
             return getattr(self, name)
         elif values is not None:
-            return clean_values(values)
+            return values
         else:
             raise ValueError("Values and name cannot be None")
