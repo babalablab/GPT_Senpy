@@ -44,13 +44,13 @@ class MetricGroup:
             else 0.0
         )
         self.num_labels = (
-            sum(self.num_labels_dct.values()) if self.num_labels_dct.values() else 0.0
+            sum(self.num_labels_dct.values()) if self.num_labels_dct.values() else 0
         )
         self.num_preds = (
-            sum(self.num_preds_dct.values()) if self.num_preds_dct.values() else 0.0
+            sum(self.num_preds_dct.values()) if self.num_preds_dct.values() else 0
         )
 
-    def export_metrics(self) -> dict[str, float]:
+    def export_metrics(self) -> dict[str, int | float]:
         return {
             "recall": self.recall,
             "precision": self.precision,
