@@ -25,7 +25,7 @@ def test_Metrics_0():
 
     mt = MetricGroup(data, data, LABEL_CATEGORY)
 
-    expected_metrics = {i: 0 for i in LABEL_CATEGORY}
+    expected_num_dct = {i: 0 for i in LABEL_CATEGORY}
     expected_export = {
         "recall": 0,
         "precision": 0,
@@ -36,14 +36,8 @@ def test_Metrics_0():
 
     assert mt.recall == mt.precision == mt.f1 == 0
     assert mt.num_labels == mt.num_preds == 0
-    assert (
-        mt.recall_dct
-        == mt.precision_dct
-        == mt.f1_dct
-        == mt.num_labels_dct
-        == mt.num_preds_dct
-        == expected_metrics
-    )
+    assert mt.recall_dct == mt.precision_dct == {}
+    assert mt.num_labels_dct == mt.num_preds_dct == expected_num_dct
     assert mt.export_metrics() == expected_export
 
 
@@ -55,36 +49,36 @@ def test_Metrics_1():
 
     mt = MetricGroup(data, data, LABEL_CATEGORY)
 
-    expected_recall_precision = {
-        i: j
-        for i, j in zip(
-            LABEL_CATEGORY, [1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0]
-        )
+    expected_recall_precision_dct = {
+        "optim-optimizer": 1,
+        "optim-optimizer-momentum": 1,
+        "optim-learningrate": 1,
+        "optim-weightdecay": 1,
+        "optim-lrscheduler": 1,
+        "batchsize": 1,
+        "epochs": 1,
+        "resource-train-gpu": 1,
+        "resource-inference-gpu": 1,
     }
-    expected_f1_dct = {
-        i: calc_f1(j, j)
-        for i, j in zip(LABEL_CATEGORY, expected_recall_precision.values())
-    }
-    expected_num = {
+    expected_num_dct = {
         i: j
         for i, j in zip(
             LABEL_CATEGORY, [1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0]
         )
     }
     expected_export = {
-        "recall": 9 / 18,
-        "precision": 9 / 18,
-        "f1": sum(expected_f1_dct.values()) / len(expected_f1_dct.values()),
+        "recall": 9 / 9,
+        "precision": 9 / 9,
+        "f1": calc_f1(9 / 9, 9 / 9),
         "num_labels": 9,
         "num_preds": 9,
     }
 
-    assert mt.recall == mt.precision == 9 / 18
-    assert mt.f1 == sum(expected_f1_dct.values()) / len(expected_f1_dct.values())
+    assert mt.recall == mt.precision == 9 / 9
+    assert mt.f1 == calc_f1(9 / 9, 9 / 9)
     assert mt.num_labels == mt.num_preds == 9
-    assert mt.recall_dct == mt.precision_dct == expected_recall_precision
-    assert mt.f1_dct == expected_f1_dct
-    assert mt.num_labels_dct == mt.num_preds_dct == expected_num
+    assert mt.recall_dct == mt.precision_dct == expected_recall_precision_dct
+    assert mt.num_labels_dct == mt.num_preds_dct == expected_num_dct
     assert mt.export_metrics() == expected_export
 
 
@@ -96,13 +90,24 @@ def test_Metrics_2():
 
     mt = MetricGroup(data, {}, LABEL_CATEGORY)
 
-    expected_metrics = {i: 0 for i in LABEL_CATEGORY}
+    expected_recall_dct = {
+        "optim-optimizer": 0,
+        "optim-optimizer-momentum": 0,
+        "optim-learningrate": 0,
+        "optim-weightdecay": 0,
+        "optim-lrscheduler": 0,
+        "batchsize": 0,
+        "epochs": 0,
+        "resource-train-gpu": 0,
+        "resource-inference-gpu": 0,
+    }
     expected_num_labels_dct = {
         i: j
         for i, j in zip(
             LABEL_CATEGORY, [1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0]
         )
     }
+    expected_num_preds_dct = {i: 0 for i in LABEL_CATEGORY}
     expected_export = {
         "recall": 0,
         "precision": 0,
@@ -114,14 +119,10 @@ def test_Metrics_2():
     assert mt.recall == mt.precision == mt.f1 == 0
     assert mt.num_labels == 9
     assert mt.num_preds == 0
-    assert (
-        mt.recall_dct
-        == mt.precision_dct
-        == mt.f1_dct
-        == mt.num_preds_dct
-        == expected_metrics
-    )
+    assert mt.recall_dct == expected_recall_dct
+    assert mt.precision_dct == {}
     assert mt.num_labels_dct == expected_num_labels_dct
+    assert mt.num_preds_dct == expected_num_preds_dct
     assert mt.export_metrics() == expected_export
 
 
@@ -133,7 +134,18 @@ def test_Metrics_3():
 
     mt = MetricGroup({}, data, LABEL_CATEGORY)
 
-    expected_metrics = {i: 0 for i in LABEL_CATEGORY}
+    expected_precision_dct = {
+        "optim-optimizer": 0,
+        "optim-optimizer-momentum": 0,
+        "optim-learningrate": 0,
+        "optim-weightdecay": 0,
+        "optim-lrscheduler": 0,
+        "batchsize": 0,
+        "epochs": 0,
+        "resource-train-gpu": 0,
+        "resource-inference-gpu": 0,
+    }
+    expected_num_labels_dct = {i: 0 for i in LABEL_CATEGORY}
     expected_num_preds_dct = {
         i: j
         for i, j in zip(
@@ -151,13 +163,9 @@ def test_Metrics_3():
     assert mt.recall == mt.precision == mt.f1 == 0
     assert mt.num_labels == 0
     assert mt.num_preds == 9
-    assert (
-        mt.recall_dct
-        == mt.precision_dct
-        == mt.f1_dct
-        == mt.num_labels_dct
-        == expected_metrics
-    )
+    assert mt.recall_dct == {}
+    assert mt.precision_dct == expected_precision_dct
+    assert mt.num_labels_dct == expected_num_labels_dct
     assert mt.num_preds_dct == expected_num_preds_dct
     assert mt.export_metrics() == expected_export
 
@@ -185,26 +193,19 @@ def test_Metrics_4():
     mt = MetricGroup(gts, preds, LABEL_CATEGORY)
 
     expected_recall_dct = {
-        i: j
-        for i, j in zip(
-            LABEL_CATEGORY,
-            [1 / 1, 0, 0, 0, 1 / 1, 0, 0, 1 / 1, 1 / 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        )
+        "optim-optimizer": 1 / 1,
+        "optim-lrscheduler": 1 / 1,
+        "optim-earlystopping": 0 / 1,
+        "batchsize": 0 / 1,
+        "iterations": 1 / 1,
+        "epochs": 1 / 1,
     }
     expected_precision_dct = {
-        i: j
-        for i, j in zip(
-            LABEL_CATEGORY,
-            [1 / 2, 0, 0, 0 / 2, 1 / 2, 0, 0, 1 / 1, 1 / 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        )
-    }
-    expected_f1_dct = {
-        i: calc_f1(j, k)
-        for i, j, k in zip(
-            LABEL_CATEGORY,
-            expected_recall_dct.values(),
-            expected_precision_dct.values(),
-        )
+        "optim-optimizer": 1 / 2,
+        "optim-weightdecay": 0 / 2,
+        "optim-lrscheduler": 1 / 2,
+        "iterations": 1 / 1,
+        "epochs": 1 / 3,
     }
     expected_num_labels_dct = {
         i: j
@@ -219,21 +220,20 @@ def test_Metrics_4():
         )
     }
     expected_export = {
-        "recall": 4 / 18,
-        "precision": (2 + 1 / 3) / 18,
-        "f1": sum(expected_f1_dct.values()) / len(expected_f1_dct.values()),
+        "recall": 4 / 6,
+        "precision": (1 / 2 + 1 / 2 + 1 / 1 + 1 / 3) / 5,
+        "f1": calc_f1(4 / 6, (1 / 2 + 1 / 2 + 1 / 1 + 1 / 3) / 5),
         "num_labels": 6,
         "num_preds": 10,
     }
 
-    assert mt.recall == 4 / 18
-    assert mt.precision == (2 + 1 / 3) / 18
-    assert mt.f1 == sum(expected_f1_dct.values()) / len(expected_f1_dct.values())
+    assert mt.recall == 4 / 6
+    assert mt.precision == (1 / 2 + 1 / 2 + 1 / 1 + 1 / 3) / 5
+    assert mt.f1 == calc_f1(4 / 6, (1 / 2 + 1 / 2 + 1 / 1 + 1 / 3) / 5)
     assert mt.num_labels == 6
     assert mt.num_preds == 10
     assert mt.recall_dct == expected_recall_dct
     assert mt.precision_dct == expected_precision_dct
-    assert mt.f1_dct == expected_f1_dct
     assert mt.num_labels_dct == expected_num_labels_dct
     assert mt.num_preds_dct == expected_num_preds_dct
     assert mt.export_metrics() == expected_export
@@ -258,11 +258,6 @@ def test_Metrics_5():
     assert mt.recall == mt.precision == mt.f1 == 0
     assert mt.num_labels == mt.num_preds == 0
     assert (
-        mt.recall_dct
-        == mt.precision_dct
-        == mt.f1_dct
-        == mt.num_labels_dct
-        == mt.num_preds_dct
-        == {}
+        mt.recall_dct == mt.precision_dct == mt.num_labels_dct == mt.num_preds_dct == {}
     )
     assert mt.export_metrics() == expected_export

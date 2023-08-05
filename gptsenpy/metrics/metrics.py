@@ -14,17 +14,27 @@ class MetricGroup:
 
         self.recall_dct = {}
         self.precision_dct = {}
-        self.f1_dct = {}
         self.num_labels_dct = {}
         self.num_preds_dct = {}
+
+        for c, label in labels.items():
+            if c not in label_category:
+                continue
+            pred = preds[c] if c in preds else set()
+            mt = Metrics(label, pred)
+            self.recall_dct[c] = mt.recall
+
+        for c, pred in preds.items():
+            if c not in label_category:
+                continue
+            label = labels[c] if c in labels else set()
+            mt = Metrics(label, pred)
+            self.precision_dct[c] = mt.precision
 
         for c in label_category:
             label = labels[c] if c in labels else set()
             pred = preds[c] if c in preds else set()
             mt = Metrics(label, pred)
-            self.recall_dct[c] = mt.recall
-            self.precision_dct[c] = mt.precision
-            self.f1_dct[c] = mt.f1
             self.num_labels_dct[c] = mt.num_labels
             self.num_preds_dct[c] = mt.num_preds
 
@@ -39,8 +49,8 @@ class MetricGroup:
             else 0.0
         )
         self.f1 = (
-            sum(self.f1_dct.values()) / len(self.f1_dct.values())
-            if self.f1_dct.values()
+            2 * (self.recall * self.precision) / (self.recall + self.precision)
+            if self.recall + self.precision
             else 0.0
         )
         self.num_labels = (
