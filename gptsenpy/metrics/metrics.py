@@ -12,21 +12,25 @@ class MetricGroup:
         self.preds = preds
         self.label_category = label_category
 
+    def __call__(self):
         self.recall_dct = {}
         self.precision_dct = {}
-        self.f1_dct = {}
         self.num_labels_dct = {}
         self.num_preds_dct = {}
 
-        for c in label_category:
-            label = labels[c] if c in labels else set()
-            pred = preds[c] if c in preds else set()
+        for c, label in self.labels.items():
+            if c not in self.label_category:
+                continue
+            pred = self.preds[c] if c in self.preds else set()
             mt = Metrics(label, pred)
             self.recall_dct[c] = mt.recall
+
+        for c, pred in self.preds.items():
+            if c not in self.label_category:
+                continue
+            label = self.labels[c] if c in self.labels else set()
+            mt = Metrics(label, pred)
             self.precision_dct[c] = mt.precision
-            self.f1_dct[c] = mt.f1
-            self.num_labels_dct[c] = mt.num_labels
-            self.num_preds_dct[c] = mt.num_preds
 
         self.recall = (
             sum(self.recall_dct.values()) / len(self.recall_dct.values())
@@ -39,10 +43,23 @@ class MetricGroup:
             else 0.0
         )
         self.f1 = (
-            sum(self.f1_dct.values()) / len(self.f1_dct.values())
-            if self.f1_dct.values()
+            2 * (self.recall * self.precision) / (self.recall + self.precision)
+            if self.recall + self.precision
             else 0.0
         )
+
+        for c in self.label_category:
+            label = self.labels[c] if c in self.labels else set()
+            pred = self.preds[c] if c in self.preds else set()
+            mt = Metrics(label, pred)
+            self.num_labels_dct[c] = mt.num_labels
+            self.num_preds_dct[c] = mt.num_preds
+
+            if c not in self.recall_dct:
+                self.recall_dct[c] = 0.0
+            if c not in self.precision_dct:
+                self.precision_dct[c] = 0.0
+
         self.num_labels = (
             sum(self.num_labels_dct.values()) if self.num_labels_dct.values() else 0
         )
