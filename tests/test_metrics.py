@@ -19,13 +19,14 @@ def calc_f1(recall, precision):
         return 0
 
 
-def test_Metrics_0():
+def test_MetricGroup_0():
     data_path = "tests/data/annotation_format.json"
     data = categorize_dict_keys(read_json(data_path), LABEL_CATEGORY)
 
     mt = MetricGroup(data, data, LABEL_CATEGORY)
+    mt()
 
-    expected_num_dct = {i: 0 for i in LABEL_CATEGORY}
+    expected_dct = {i: 0 for i in LABEL_CATEGORY}
     expected_export = {
         "recall": 0,
         "precision": 0,
@@ -36,18 +37,24 @@ def test_Metrics_0():
 
     assert mt.recall == mt.precision == mt.f1 == 0
     assert mt.num_labels == mt.num_preds == 0
-    assert mt.recall_dct == mt.precision_dct == {}
-    assert mt.num_labels_dct == mt.num_preds_dct == expected_num_dct
+    assert (
+        mt.recall_dct
+        == mt.precision_dct
+        == mt.num_labels_dct
+        == mt.num_preds_dct
+        == expected_dct
+    )
     assert mt.export_metrics() == expected_export
 
 
-def test_Metrics_1():
+def test_MetricGroup_1():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
     data = categorize_dict_keys(read_json(data_path), LABEL_CATEGORY)
 
     mt = MetricGroup(data, data, LABEL_CATEGORY)
+    mt()
 
     expected_recall_precision_dct = {
         "optim-optimizer": 1,
@@ -60,6 +67,9 @@ def test_Metrics_1():
         "resource-train-gpu": 1,
         "resource-inference-gpu": 1,
     }
+    for i in LABEL_CATEGORY:
+        if i not in expected_recall_precision_dct:
+            expected_recall_precision_dct[i] = 0
     expected_num_dct = {
         i: j
         for i, j in zip(
@@ -82,13 +92,14 @@ def test_Metrics_1():
     assert mt.export_metrics() == expected_export
 
 
-def test_Metrics_2():
+def test_MetricGroup_2():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
     data = categorize_dict_keys(read_json(data_path), LABEL_CATEGORY)
 
     mt = MetricGroup(data, {}, LABEL_CATEGORY)
+    mt()
 
     expected_recall_dct = {
         "optim-optimizer": 0,
@@ -101,6 +112,10 @@ def test_Metrics_2():
         "resource-train-gpu": 0,
         "resource-inference-gpu": 0,
     }
+    for i in LABEL_CATEGORY:
+        if i not in expected_recall_dct:
+            expected_recall_dct[i] = 0
+    expected_precision_dct = {i: 0 for i in LABEL_CATEGORY}
     expected_num_labels_dct = {
         i: j
         for i, j in zip(
@@ -120,20 +135,22 @@ def test_Metrics_2():
     assert mt.num_labels == 9
     assert mt.num_preds == 0
     assert mt.recall_dct == expected_recall_dct
-    assert mt.precision_dct == {}
+    assert mt.precision_dct == expected_precision_dct
     assert mt.num_labels_dct == expected_num_labels_dct
     assert mt.num_preds_dct == expected_num_preds_dct
     assert mt.export_metrics() == expected_export
 
 
-def test_Metrics_3():
+def test_MetricGroup_3():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
     data = categorize_dict_keys(read_json(data_path), LABEL_CATEGORY)
 
     mt = MetricGroup({}, data, LABEL_CATEGORY)
+    mt()
 
+    expected_recall_dct = {i: 0 for i in LABEL_CATEGORY}
     expected_precision_dct = {
         "optim-optimizer": 0,
         "optim-optimizer-momentum": 0,
@@ -145,6 +162,9 @@ def test_Metrics_3():
         "resource-train-gpu": 0,
         "resource-inference-gpu": 0,
     }
+    for i in LABEL_CATEGORY:
+        if i not in expected_precision_dct:
+            expected_precision_dct[i] = 0
     expected_num_labels_dct = {i: 0 for i in LABEL_CATEGORY}
     expected_num_preds_dct = {
         i: j
@@ -163,14 +183,14 @@ def test_Metrics_3():
     assert mt.recall == mt.precision == mt.f1 == 0
     assert mt.num_labels == 0
     assert mt.num_preds == 9
-    assert mt.recall_dct == {}
+    assert mt.recall_dct == expected_recall_dct
     assert mt.precision_dct == expected_precision_dct
     assert mt.num_labels_dct == expected_num_labels_dct
     assert mt.num_preds_dct == expected_num_preds_dct
     assert mt.export_metrics() == expected_export
 
 
-def test_Metrics_4():
+def test_MetricGroup_4():
     gts = {
         "optim-optimizer": {"optim-optimizer-Adam"},
         "optim-lrscheduler": {"optim-lrscheduler-CosineAnnealingLR"},
@@ -191,6 +211,7 @@ def test_Metrics_4():
     }
 
     mt = MetricGroup(gts, preds, LABEL_CATEGORY)
+    mt()
 
     expected_recall_dct = {
         "optim-optimizer": 1 / 1,
@@ -207,6 +228,11 @@ def test_Metrics_4():
         "iterations": 1 / 1,
         "epochs": 1 / 3,
     }
+    for i in LABEL_CATEGORY:
+        if i not in expected_recall_dct:
+            expected_recall_dct[i] = 0
+        if i not in expected_precision_dct:
+            expected_precision_dct[i] = 0
     expected_num_labels_dct = {
         i: j
         for i, j in zip(
@@ -239,13 +265,14 @@ def test_Metrics_4():
     assert mt.export_metrics() == expected_export
 
 
-def test_Metrics_5():
+def test_MetricGroup_5():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
     data = categorize_dict_keys(read_json(data_path), LABEL_CATEGORY)
 
     mt = MetricGroup(data, data, [])
+    mt()
 
     expected_export = {
         "recall": 0,
