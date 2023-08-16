@@ -26,7 +26,8 @@ def test_MetricGroup_0():
     mt = MetricGroup(data, data, LABEL_CATEGORY)
     mt()
 
-    expected_dct = {i: 0 for i in LABEL_CATEGORY}
+    expected_recall_precision_dct = {i: None for i in LABEL_CATEGORY}
+    expected_num_dct = {i: 0 for i in LABEL_CATEGORY}
     expected_export = {
         "recall": 0,
         "precision": 0,
@@ -37,13 +38,8 @@ def test_MetricGroup_0():
 
     assert mt.recall == mt.precision == mt.f1 == 0
     assert mt.num_labels == mt.num_preds == 0
-    assert (
-        mt.recall_dct
-        == mt.precision_dct
-        == mt.num_labels_dct
-        == mt.num_preds_dct
-        == expected_dct
-    )
+    assert mt.recall_dct == mt.precision_dct == expected_recall_precision_dct
+    assert mt.num_labels_dct == mt.num_preds_dct == expected_num_dct
     assert mt.export_metrics() == expected_export
 
 
@@ -69,7 +65,7 @@ def test_MetricGroup_1():
     }
     for i in LABEL_CATEGORY:
         if i not in expected_recall_precision_dct:
-            expected_recall_precision_dct[i] = 0
+            expected_recall_precision_dct[i] = None
     expected_num_dct = {
         i: j
         for i, j in zip(
@@ -114,8 +110,8 @@ def test_MetricGroup_2():
     }
     for i in LABEL_CATEGORY:
         if i not in expected_recall_dct:
-            expected_recall_dct[i] = 0
-    expected_precision_dct = {i: 0 for i in LABEL_CATEGORY}
+            expected_recall_dct[i] = None
+    expected_precision_dct = {i: None for i in LABEL_CATEGORY}
     expected_num_labels_dct = {
         i: j
         for i, j in zip(
@@ -150,7 +146,7 @@ def test_MetricGroup_3():
     mt = MetricGroup({}, data, LABEL_CATEGORY)
     mt()
 
-    expected_recall_dct = {i: 0 for i in LABEL_CATEGORY}
+    expected_recall_dct = {i: None for i in LABEL_CATEGORY}
     expected_precision_dct = {
         "optim-optimizer": 0,
         "optim-optimizer-momentum": 0,
@@ -164,7 +160,7 @@ def test_MetricGroup_3():
     }
     for i in LABEL_CATEGORY:
         if i not in expected_precision_dct:
-            expected_precision_dct[i] = 0
+            expected_precision_dct[i] = None
     expected_num_labels_dct = {i: 0 for i in LABEL_CATEGORY}
     expected_num_preds_dct = {
         i: j
@@ -230,9 +226,9 @@ def test_MetricGroup_4():
     }
     for i in LABEL_CATEGORY:
         if i not in expected_recall_dct:
-            expected_recall_dct[i] = 0
+            expected_recall_dct[i] = None
         if i not in expected_precision_dct:
-            expected_precision_dct[i] = 0
+            expected_precision_dct[i] = None
     expected_num_labels_dct = {
         i: j
         for i, j in zip(

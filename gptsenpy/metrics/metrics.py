@@ -56,9 +56,9 @@ class MetricGroup:
             self.num_preds_dct[c] = mt.num_preds
 
             if c not in self.recall_dct:
-                self.recall_dct[c] = 0.0
+                self.recall_dct[c] = None
             if c not in self.precision_dct:
-                self.precision_dct[c] = 0.0
+                self.precision_dct[c] = None
 
         self.num_labels = (
             sum(self.num_labels_dct.values()) if self.num_labels_dct.values() else 0
