@@ -67,7 +67,7 @@ class PDFLoader:
         AssertionError: If the provided page range is invalid. The valid page range is from 1 to the total number of pages in the document. The start_pno should be less than or equal to end_pno.
 
         Example:
-        get_page_text_by_range(1, 2) would return the text from the first page up to but not including the second page.
+        get_page_text_by_range(1, 2) would return the text from the first and second page.
         """
         start_pno = 1 if end_pno is None else start_pno
         end_pno = self.page_count if end_pno is None else end_pno
