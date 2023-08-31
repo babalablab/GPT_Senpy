@@ -1,7 +1,6 @@
 from collections import Counter, defaultdict
 from typing import TypeAlias, cast
 
-
 Num: TypeAlias = int | float | bool
 DEFAULT_KEY = [
     "optim-optimizer-Adadelta",
@@ -116,6 +115,7 @@ def categorize_dict_keys(
     results: list[dict[str, Num]] | dict[str, Num],
     label_category: dict[str, list[str]],
     vote_option: str = "union",
+    keys: list[str] | None = None,
 ) -> dict[str, set[str | Num]]:
     """
     Categorizes and aggregates dictionaries based on specified label categories and voting options.
@@ -129,6 +129,8 @@ def categorize_dict_keys(
     vote_option : str, optional
         The voting method to use for aggregation. Supported options are "union" and "majority_vote".
         The default is "union".
+    keys : list[str] | None, optional
+        A list of keys. The default is None.
 
     Raises
     ------
@@ -147,7 +149,10 @@ def categorize_dict_keys(
         [results] if isinstance(results, dict) else results
     )
     for result in results_lst:
-        cleaned_result = clean_values(result)
+        if keys is None:
+            cleaned_result = clean_values(result)
+        else:
+            cleaned_result = clean_values(result, keys)
 
         for category, subs in label_category.items():
             is_single_category = True if len(subs) == 1 else False
