@@ -3,8 +3,7 @@ import sys
 
 sys.path.append("../gptsenpy")
 from gptsenpy.io.read import read_json
-from gptsenpy.utils import clean_values, categorize_dict_keys, uncategorize_dict_keys
-
+from gptsenpy.utils import categorize_dict_keys, clean_values, uncategorize_dict_keys
 
 with open("tests/data/label_category.json", "r") as f:
     label_category = json.load(f)
@@ -123,10 +122,31 @@ def test_categorize_dict_keys_0():
         "epochs": {20},
         "iterations": {5510},
     }
+    expected_both = {
+        "optim-optimizer": {"optim-optimizer-Adam", "optim-optimizer-SGD"},  # 'union'
+        "optim-lrscheduler": {"optim-lrscheduler-CosineAnnealingLR"},  # 'majority_vote'
+        "optim-weightdecay": {5e-5, 5e-4},  # 'union'
+        "epochs": {20},  # 'majority_vote'
+        "iterations": {5510},  # 'union'
+    }
     assert categorize_dict_keys([dct1, dct2, dct3], label_category) == expected
     assert (
         categorize_dict_keys([dct1, dct2, dct3], label_category, "majority_vote")
         == expected_majority_vote
+    )
+    assert (
+        categorize_dict_keys(
+            [dct1, dct2, dct3],
+            label_category,
+            {
+                "optim-optimizer": "union",
+                "optim-lrscheduler": "majority_vote",
+                "optim-weightdecay": "union",
+                "epochs": "majority_vote",
+                "iterations": "union",
+            },
+        )
+        == expected_both
     )
 
 
@@ -213,11 +233,26 @@ def test_categorize_dict_keys_3():
 
 def test_categorize_dict_keys_4():
     try:
-        categorize_dict_keys([{}], {}, "not_exist")
+        categorize_dict_keys(
+            [{"A": True}], {"A": ["A"]}, vote_option="not_exist", keys=["A"]
+        )
     except ValueError:
         pass
     else:
-        assert 1
+        assert 0
+
+
+def test_categorize_dict_keys_5():  # one dict, lacks "epochs" as a key
+    dct = {
+        "optim-optimizer-Adam": True,
+        "epochs": 10,
+    }
+    try:
+        categorize_dict_keys(dct, label_category, {"optim-optimizer": "union"})
+    except ValueError:
+        pass
+    else:
+        assert 0
 
 
 def test_uncategorize_dict_keys_0():
