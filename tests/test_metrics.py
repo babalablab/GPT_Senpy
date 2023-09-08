@@ -5,8 +5,7 @@ sys.path.append("../gptsenpy")
 
 from gptsenpy.io.read import read_json
 from gptsenpy.metrics import MetricGroup
-from gptsenpy.utils import categorize_dict_keys
-
+from gptsenpy.utils import categorize_labels
 
 with open("tests/data/label_category.json", "r") as f:
     LABEL_CATEGORY = json.load(f)
@@ -21,7 +20,7 @@ def calc_f1(recall, precision):
 
 def test_MetricGroup_0():
     data_path = "tests/data/annotation_format.json"
-    data = categorize_dict_keys(read_json(data_path), LABEL_CATEGORY)
+    data = categorize_labels(read_json(data_path), LABEL_CATEGORY)
 
     mt = MetricGroup(data, data, LABEL_CATEGORY)
     mt()
@@ -47,7 +46,7 @@ def test_MetricGroup_1():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
-    data = categorize_dict_keys(read_json(data_path), LABEL_CATEGORY)
+    data = categorize_labels(read_json(data_path), LABEL_CATEGORY)
 
     mt = MetricGroup(data, data, LABEL_CATEGORY)
     mt()
@@ -92,7 +91,7 @@ def test_MetricGroup_2():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
-    data = categorize_dict_keys(read_json(data_path), LABEL_CATEGORY)
+    data = categorize_labels(read_json(data_path), LABEL_CATEGORY)
 
     mt = MetricGroup(data, {}, LABEL_CATEGORY)
     mt()
@@ -141,7 +140,7 @@ def test_MetricGroup_3():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
-    data = categorize_dict_keys(read_json(data_path), LABEL_CATEGORY)
+    data = categorize_labels(read_json(data_path), LABEL_CATEGORY)
 
     mt = MetricGroup({}, data, LABEL_CATEGORY)
     mt()
@@ -265,7 +264,7 @@ def test_MetricGroup_5():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
-    data = categorize_dict_keys(read_json(data_path), LABEL_CATEGORY)
+    data = categorize_labels(read_json(data_path), LABEL_CATEGORY)
 
     mt = MetricGroup(data, data, [])
     mt()

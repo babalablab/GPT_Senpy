@@ -111,14 +111,14 @@ def clean_values(
     return ret_dct
 
 
-def categorize_dict_keys(
+def categorize_labels(
     results: list[dict[str, Num]] | dict[str, Num],
     label_category: dict[str, list[str]],
-    vote_option: str | dict = "union",
+    vote_option: str = "union",
     keys: list[str] | None = None,
 ) -> dict[str, set[str | Num]]:
     """
-    Categorizes and aggregates dictionaries based on specified label categories and voting options.
+    Categorizes and aggregates dictionaries based on specified label categories and a string of voting option.
 
     Parameters
     ----------
@@ -126,10 +126,47 @@ def categorize_dict_keys(
         A dictionary or a list of dictionaries containing key-value pairs to be categorized.
     label_category : dict[str, list[str]]
         A dictionary mapping category names to lists of keys that belong to each category.
-    vote_option : str | dict, optional
+    vote_option : str, optional
         The voting method to use for aggregation. Supported options are "union" and "majority_vote".
-        When a str given, it's applied to all categories. When a dict is given, vote options are applied to the corresponding categories.
-        The default is "union".
+        The voting method is applied to all categories. The default is "union".
+    keys : list[str] | None, optional
+        A list of keys. The default is None.
+
+    Raises
+    ------
+    ValueError
+        If the provided `vote_option` is not based on supported voting methods.
+
+    Returns
+    -------
+    aggregated_result : dict[str, set[str | Num]]
+        A dictionary where each key corresponds to a category name, and the corresponding value is a set containing
+        the aggregated values from the keys belonging to that category.
+
+    """
+    return categorize_labels_with_dct(
+        results, label_category, {k: vote_option for k in label_category}, keys
+    )
+
+
+def categorize_labels_with_dct(
+    results: list[dict[str, Num]] | dict[str, Num],
+    label_category: dict[str, list[str]],
+    vote_option: dict,
+    keys: list[str] | None = None,
+) -> dict[str, set[str | Num]]:
+    """
+    Categorizes and aggregates dictionaries based on specified label categories and a dictionary of voting options for each category.
+
+    Parameters
+    ----------
+    results : list[dict[str, Num]] | dict[str, Num]
+        A dictionary or a list of dictionaries containing key-value pairs to be categorized.
+    label_category : dict[str, list[str]]
+        A dictionary mapping category names to lists of keys that belong to each category.
+    vote_option : dict
+        A dictionnary of voting method to use for aggregation, where keys are categories and values are one of supported voting options.
+        Supported options are "union" and "majority_vote".
     keys : list[str] | None, optional
         A list of keys. The default is None.
 
@@ -165,9 +202,6 @@ def categorize_dict_keys(
                     merged_result[category].append(cleaned_result[sub])
                 else:
                     merged_result[category].append(sub)
-
-    if isinstance(vote_option, str):
-        vote_option = {k: vote_option for k in merged_result.keys()}
 
     aggregated_result: dict[str, set[str | Num]] = dict()
     for c, v in merged_result.items():
