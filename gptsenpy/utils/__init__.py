@@ -1,6 +1,7 @@
 from .utils import (
     Num,
+    categorize_labels,
+    categorize_labels_with_dct,
     clean_values,
-    categorize_dict_keys,
     uncategorize_dict_keys,
 )

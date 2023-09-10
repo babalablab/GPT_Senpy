@@ -3,8 +3,12 @@ import sys
 
 sys.path.append("../gptsenpy")
 from gptsenpy.io.read import read_json
-from gptsenpy.utils import clean_values, categorize_dict_keys, uncategorize_dict_keys
-
+from gptsenpy.utils import (
+    categorize_labels,
+    categorize_labels_with_dct,
+    clean_values,
+    uncategorize_dict_keys,
+)
 
 with open("tests/data/label_category.json", "r") as f:
     label_category = json.load(f)
@@ -76,7 +80,7 @@ def test_clean_values_4():
     assert clean_values(data, key_lst) == true_dct
 
 
-def test_categorize_dict_keys_0():
+def test_categorize_labels_0():
     dct1 = {
         "optim-optimizer-Adam": True,
         "optim-lrscheduler-LambdaLR": True,
@@ -123,14 +127,37 @@ def test_categorize_dict_keys_0():
         "epochs": {20},
         "iterations": {5510},
     }
-    assert categorize_dict_keys([dct1, dct2, dct3], label_category) == expected
+    expected_both = {
+        "optim-optimizer": {"optim-optimizer-Adam", "optim-optimizer-SGD"},  # 'union'
+        "optim-lrscheduler": {"optim-lrscheduler-CosineAnnealingLR"},  # 'majority_vote'
+        "optim-weightdecay": {5e-5, 5e-4},  # 'union'
+        "epochs": {20},  # 'majority_vote'
+        "iterations": {5510},  # 'union'
+    }
+    assert categorize_labels([dct1, dct2, dct3], label_category) == expected
     assert (
-        categorize_dict_keys([dct1, dct2, dct3], label_category, "majority_vote")
+        categorize_labels(
+            [dct1, dct2, dct3], label_category, vote_option="majority_vote"
+        )
         == expected_majority_vote
+    )
+    assert (
+        categorize_labels_with_dct(
+            [dct1, dct2, dct3],
+            label_category,
+            {
+                "optim-optimizer": "union",
+                "optim-lrscheduler": "majority_vote",
+                "optim-weightdecay": "union",
+                "epochs": "majority_vote",
+                "iterations": "union",
+            },
+        )
+        == expected_both
     )
 
 
-def test_categorize_dict_keys_1():
+def test_categorize_labels_1():
     dct1 = {
         "optim-optimizer-Adam": False,
         "optim-lrscheduler-LambdaLR": True,
@@ -179,18 +206,20 @@ def test_categorize_dict_keys_1():
         "optim-earlystopping": {True},
         "epochs": {10, 20},
     }
-    assert categorize_dict_keys([dct1, dct2, dct3], label_category) == expected
+    assert categorize_labels([dct1, dct2, dct3], label_category) == expected
     assert (
-        categorize_dict_keys([dct1, dct2, dct3], label_category, "majority_vote")
+        categorize_labels(
+            [dct1, dct2, dct3], label_category, vote_option="majority_vote"
+        )
         == expected_majority_vote
     )
 
 
-def test_categorize_dict_keys_2():
+def test_categorize_labels_2():
     data_path = (
         "tests/data/DAMO-YOLO_A_Report_on_Real-Time_Object_Detection_Design.json"
     )
-    data = categorize_dict_keys(read_json(data_path), label_category)  # one dict
+    data = categorize_labels(read_json(data_path), label_category)  # one dict
     expected = {
         "optim-optimizer": {"optim-optimizer-MomentumSGD"},
         "optim-optimizer-momentum": {0.9},
@@ -205,19 +234,34 @@ def test_categorize_dict_keys_2():
     assert data == expected
 
 
-def test_categorize_dict_keys_3():
+def test_categorize_labels_3():
     data_path = "tests/data/annotation_format.json"
-    data = categorize_dict_keys(read_json(data_path), label_category)  # empty dict
+    data = categorize_labels(read_json(data_path), label_category)  # empty dict
     assert data == {}
 
 
-def test_categorize_dict_keys_4():
+def test_categorize_labels_4():
     try:
-        categorize_dict_keys([{}], {}, "not_exist")
+        categorize_labels(
+            [{"A": True}], {"A": ["A"]}, vote_option="not_exist", keys=["A"]
+        )
     except ValueError:
         pass
     else:
-        assert 1
+        assert 0
+
+
+def test_categorize_labels_5():  # one dict, lacks "epochs" as a key
+    dct = {
+        "optim-optimizer-Adam": True,
+        "epochs": 10,
+    }
+    try:
+        categorize_labels_with_dct(dct, label_category, {"optim-optimizer": "union"})
+    except ValueError:
+        pass
+    else:
+        assert 0
 
 
 def test_uncategorize_dict_keys_0():

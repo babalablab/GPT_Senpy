@@ -94,7 +94,7 @@ def clean_values(
         A cleaned dictionary containing only bool, int, or float values.
 
     """
-    assert isinstance(dct, dict), "Dct must be a dict"
+    assert isinstance(dct, dict), "'dct' must be a dict"
     ret_dct: dict[str, Num] = {}
 
     for k in key_lst:
@@ -111,14 +111,14 @@ def clean_values(
     return ret_dct
 
 
-def categorize_dict_keys(
+def categorize_labels(
     results: list[dict[str, Num]] | dict[str, Num],
     label_category: dict[str, list[str]],
     vote_option: str = "union",
     keys: list[str] | None = None,
 ) -> dict[str, set[str | Num]]:
     """
-    Categorizes and aggregates dictionaries based on specified label categories and voting options.
+    Categorizes and aggregates dictionaries based on specified label categories and a string of voting option.
 
     Parameters
     ----------
@@ -128,14 +128,52 @@ def categorize_dict_keys(
         A dictionary mapping category names to lists of keys that belong to each category.
     vote_option : str, optional
         The voting method to use for aggregation. Supported options are "union" and "majority_vote".
-        The default is "union".
+        The voting method is applied to all categories. The default is "union".
     keys : list[str] | None, optional
         A list of keys. The default is None.
 
     Raises
     ------
     ValueError
-        If the provided `vote_option` is not a supported voting method.
+        If the provided `vote_option` is not based on supported voting methods.
+
+    Returns
+    -------
+    aggregated_result : dict[str, set[str | Num]]
+        A dictionary where each key corresponds to a category name, and the corresponding value is a set containing
+        the aggregated values from the keys belonging to that category.
+
+    """
+    return categorize_labels_with_dct(
+        results, label_category, {k: vote_option for k in label_category}, keys
+    )
+
+
+def categorize_labels_with_dct(
+    results: list[dict[str, Num]] | dict[str, Num],
+    label_category: dict[str, list[str]],
+    vote_option: dict,
+    keys: list[str] | None = None,
+) -> dict[str, set[str | Num]]:
+    """
+    Categorizes and aggregates dictionaries based on specified label categories and a dictionary of voting options for each category.
+
+    Parameters
+    ----------
+    results : list[dict[str, Num]] | dict[str, Num]
+        A dictionary or a list of dictionaries containing key-value pairs to be categorized.
+    label_category : dict[str, list[str]]
+        A dictionary mapping category names to lists of keys that belong to each category.
+    vote_option : dict
+        A dictionnary of voting method to use for aggregation, where keys are categories and values are one of supported voting options.
+        Supported options are "union" and "majority_vote".
+    keys : list[str] | None, optional
+        A list of keys. The default is None.
+
+    Raises
+    ------
+    ValueError
+        If the provided `vote_option` is not based on supported voting methods or if 'vote_option' doesn't include all possible keys.
 
     Returns
     -------
@@ -166,19 +204,23 @@ def categorize_dict_keys(
                     merged_result[category].append(sub)
 
     aggregated_result: dict[str, set[str | Num]] = dict()
-    match vote_option:
-        case "union":
-            aggregated_result = {k: set(v) for k, v in merged_result.items()}
-        case "majority_vote":
-            for key, value in merged_result.items():
-                cnt = Counter(value)
+    for c, v in merged_result.items():
+        if c not in vote_option:
+            raise ValueError(
+                f"Invalid value: 'vote_option'\n'{c}' doesn't exist in 'vote_option' as a key."
+            )
+        match vote_option[c]:
+            case "union":
+                aggregated_result[c] = set(v)
+            case "majority_vote":
+                cnt = Counter(v)
                 max_cnt = max(cnt.values())
                 majorities = [k for k, v in cnt.items() if v == max_cnt]
-                aggregated_result[key] = set(majorities)
-        case _:
-            raise ValueError(
-                f"'vote_option' must be a supported voting method, got '{vote_option}.'"
-            )
+                aggregated_result[c] = set(majorities)
+            case _:
+                raise ValueError(
+                    f"'vote_option' must be based on supported voting methods, got '{vote_option[c]}.'"
+                )
 
     return aggregated_result
 
